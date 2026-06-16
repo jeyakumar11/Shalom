@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shalom Fashion - Admin Panel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f5f7fa;color:#2c3e50;min-height:100vh}
+
+/* Login Screen */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px}
+.login-box{background:#fff;padding:40px;border-radius:16px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-box h1{text-align:center;color:#c0392b;margin-bottom:8px;font-size:24px}
+.login-box p{text-align:center;color:#7f8c8d;margin-bottom:24px;font-size:14px}
+
+/* Form Elements */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:6px;font-size:13px;color:#555;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;background:#fff;border:1px solid #ddd;border-radius:8px;color:#2c3e50;font-size:14px;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,0.1)}
+
+/* Buttons */
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-primary{background:#c0392b;color:#fff}.btn-primary:hover{background:#a93226;transform:translateY(-1px);box-shadow:0 4px 12px rgba(192,57,43,0.3)}
+.btn-success{background:#27ae60;color:#fff}.btn-success:hover{background:#219a52;transform:translateY(-1px);box-shadow:0 4px 12px rgba(39,174,96,0.3)}
+.btn-danger{background:#e74c3c;color:#fff}.btn-danger:hover{background:#c0392b;transform:translateY(-1px)}
+.btn-secondary{background:#95a5a6;color:#fff}.btn-secondary:hover{background:#7f8c8d}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-full{width:100%}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
+
+/* Layout */
+.hidden{display:none!important}
+.app{display:flex;min-height:100vh;background:#f5f7fa}
+.sidebar{width:260px;background:#fff;padding:20px 0;flex-shrink:0;box-shadow:2px 0 10px rgba(0,0,0,0.05);border-right:1px solid #e8ecef}
+.sidebar-logo{padding:0 20px 20px;border-bottom:2px solid #f0f3f5}
+.sidebar-logo h2{color:#c0392b;font-size:20px;display:flex;align-items:center;gap:8px}
+.sidebar-logo p{color:#7f8c8d;font-size:12px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:#7f8c8d;font-size:14px;transition:all .2s;margin:4px 10px;border-radius:8px}
+.nav-item:hover{background:#f8f9fa;color:#2c3e50}
+.nav-item.active{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;box-shadow:0 4px 12px rgba(192,57,43,0.3)}
+.nav-item span{font-size:18px}
+
+/* Main Content */
+.main{flex:1;overflow:auto;background:#f5f7fa}
+.topbar{background:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8ecef;box-shadow:0 2px 8px rgba(0,0,0,0.05);flex-wrap:wrap;gap:12px}
+.topbar h1{font-size:20px;color:#2c3e50}
+.content{padding:24px}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e8ecef}
+.card h3{margin-bottom:16px;color:#2c3e50;font-size:16px;border-bottom:2px solid #f0f3f5;padding-bottom:10px}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e8ecef;transition:transform .2s}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.12)}
+.stat-card .value{font-size:32px;font-weight:700;color:#c0392b;margin-bottom:8px}
+.stat-card .label{font-size:13px;color:#7f8c8d;text-transform:uppercase;letter-spacing:0.5px}
+
+/* Tables */
+.table-container{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:800px}
+th{background:#f8f9fa;padding:12px;text-align:left;color:#555;font-weight:600;border-bottom:2px solid #e8ecef;white-space:nowrap}
+td{padding:12px;border-bottom:1px solid #f0f3f5;color:#2c3e50}
+tr:hover td{background:#f8f9fa}
+
+/* Badges */
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block}
+.badge-green{background:#d4edda;color:#155724}
+.badge-red{background:#f8d7da;color:#721c24}
+.badge-yellow{background:#fff3cd;color:#856404}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal h3{margin-bottom:20px;color:#2c3e50;font-size:18px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Alerts */
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px}
+.alert-success{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+.alert-error{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+
+/* Search Bar */
+.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;padding:10px 14px;background:#fff;border:1px solid #ddd;border-radius:8px;color:#2c3e50;font-size:13px;outline:none}
+.search-bar input:focus{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,0.1)}
+
+/* Tags */
+.tag{display:inline-block;padding:4px 10px;border-radius:4px;font-size:11px;background:#e8ecef;color:#555;margin:2px}
+
+/* Mobile Hamburger Menu */
+.mobile-menu-btn{display:none;background:none;border:none;font-size:24px;color:#2c3e50;cursor:pointer;padding:8px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar{position:fixed;left:-280px;top:0;bottom:0;width:260px;z-index:999;transition:left .3s;box-shadow:4px 0 20px rgba(0,0,0,0.2)}
+  .sidebar.active{left:0}
+  .sidebar-overlay.active{display:block}
+  .mobile-menu-btn{display:block}
+  .topbar{padding:12px 16px}
+  .topbar h1{font-size:18px}
+  .content{padding:16px}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .stat-card{padding:16px}
+  .stat-card .value{font-size:24px}
+  .form-row{grid-template-columns:1fr}
+  .modal{padding:20px;max-width:95vw}
+  .modal-footer{flex-direction:column}
+  .modal-footer .btn{width:100%}
+  .card{padding:16px}
+  table{font-size:12px}
+  th,td{padding:8px}
+  .btn-sm{font-size:11px;padding:5px 10px}
+}
+
+@media (max-width: 480px) {
+  .stats-grid{grid-template-columns:1fr}
+  .login-box{padding:24px}
+  .topbar{flex-direction:column;align-items:flex-start}
+  .stat-card .value{font-size:20px}
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:#f0f3f5}
+::-webkit-scrollbar-thumb{background:#c0c9d1;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#a0a9b1}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <h1>🌸 Shalom Fashion</h1>
+    <p>Admin Panel - Secure Login</p>
+    <div id="loginAlert"></div>
+    <div class="form-group">
+      <label>Admin Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter admin password" onkeypress="if(event.key==='Enter')login()">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="login()">Login to Admin Panel</button>
+    <p style="text-align:center;margin-top:16px;font-size:12px;color:#666">Default password: admin123</p>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="mainApp" class="app hidden">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h2><i class="fas fa-shopping-bag"></i> Shalom Fashion</h2>
+      <p>Admin Panel</p>
+    </div>
+    <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+      <span>📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('products')" id="nav-products">
+      <span>👗</span> Products
+    </div>
+    <div class="nav-item" onclick="showPage('orders')" id="nav-orders">
+      <span>📦</span> Orders
+    </div>
+    <div class="nav-item" onclick="showPage('stock')" id="nav-stock">
+      <span>📈</span> Stock History
+    </div>
+    <div style="margin-top:auto;padding:20px">
+      <button class="btn btn-secondary btn-full" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-size:12px;color:#7f8c8d">Logged in as Admin</span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm">View Website</a>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- Dashboard -->
+      <div id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="value" id="stat-products">0</div><div class="label">Total Products</div></div>
+          <div class="stat-card"><div class="value" id="stat-orders">0</div><div class="label">Total Orders</div></div>
+          <div class="stat-card"><div class="value" id="stat-revenue">₹0</div><div class="label">Total Revenue</div></div>
+          <div class="stat-card"><div class="value" id="stat-lowstock">0</div><div class="label">Low Stock Items</div></div>
+        </div>
+        <div class="card">
+          <h3>Recent Orders</h3>
+          <div class="table-container">
+            <table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead>
+            <tbody id="recentOrdersTable"><tr><td colspan="6" style="text-align:center;color:#999">Loading...</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Low Stock Alert (≤5 units)</h3>
+          <div class="table-container">
+            <table><thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Action</th></tr></thead>
+            <tbody id="lowStockTable"><tr><td colspan="4" style="text-align:center;color:#999">Loading...</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div id="page-products" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="color:#fff">Products Management</h2>
+          <button class="btn btn-primary" onclick="openAddProduct()">+ Add Product</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="productSearch" placeholder="Search by name, SKU or barcode..." oninput="filterProducts()">
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:20px 20px 0">
+            <h3 style="margin:0;padding-bottom:16px">Product List</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Name</th><th>SKU</th><th>Barcode</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+              <tbody id="productsTable"><tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div id="page-orders" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="color:#fff">All Orders</h2>
+          <button class="btn btn-success btn-sm" onclick="exportOrdersExcel()">
+            <i class="fas fa-file-excel"></i> Export to Excel
+          </button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:20px 20px 0">
+            <h3 style="margin:0;padding-bottom:16px">All Orders</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="ordersTable"><tr><td colspan="9" style="text-align:center;padding:20px;color:#999">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stock History -->
+      <div id="page-stock" class="hidden">
+        <h2 style="color:#fff;margin-bottom:16px">Stock History</h2>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:20px 20px 0">
+            <h3 style="margin:0;padding-bottom:16px">Stock Changes</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Product</th><th>Old Stock</th><th>New Stock</th><th>Change</th><th>Reason</th><th>Time</th></tr></thead>
+              <tbody id="stockTable"><tr><td colspan="6" style="text-align:center;padding:20px;color:#999">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Product Modal -->
+<div id="productModal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 id="productModalTitle">Add Product</h3>
+    <div id="productAlert"></div>
+    <input type="hidden" id="productId">
+    <div class="form-row">
+      <div class="form-group"><label>Product Name *</label><input type="text" id="pName" placeholder="e.g. Black Anarkali Gown"></div>
+      <div class="form-group"><label>Category *</label>
+        <select id="pCategory">
+          <option value="indian">Indian Wear</option>
+          <option value="western">Western Wear</option>
+          <option value="bridal">Bridal</option>
+          <option value="accessories">Accessories</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea id="pDescription" rows="2" placeholder="Product description..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Price (₹) *</label><input type="number" id="pPrice" placeholder="5999" min="0"></div>
+      <div class="form-group"><label>Stock Quantity *</label><input type="number" id="pStock" placeholder="10" min="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>SKU *</label><input type="text" id="pSKU" placeholder="SF-ANK-001"></div>
+      <div class="form-group">
+        <label>Barcode * <span style="color:#666;font-size:11px">(EAN-13, UPC, Code128)</span></label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="pBarcode" placeholder="8901234567890" style="flex:1">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="generateBarcode()" title="Auto-generate barcode">🔄 Generate</button>
+        </div>
+      </div>
+    </div>
+    <div id="barcodePreview" class="hidden" style="margin-bottom:16px;padding:12px;background:#f8f9fa;border-radius:8px;text-align:center">
+      <p style="font-size:12px;color:#666;margin-bottom:8px">Barcode Preview:</p>
+      <div id="barcodeImage" style="height:40px"></div>
+      <p id="barcodeText" style="font-size:11px;color:#aaa;margin-top:8px"></p>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Fabric</label><input type="text" id="pFabric" placeholder="Georgette"></div>
+      <div class="form-group"><label>Occasion</label><input type="text" id="pOccasion" placeholder="Wedding, Party"></div>
+    </div>
+    <div class="form-group"><label>Sizes (comma separated)</label><input type="text" id="pSizes" placeholder="S, M, L, XL, XXL"></div>
+    <div class="form-group">
+      <label>Image Source</label>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="radio" name="imageSource" value="url" checked onchange="toggleImageSource()"> URL
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="radio" name="imageSource" value="file" onchange="toggleImageSource()"> Upload File
+        </label>
+      </div>
+      <div id="imageUrlInput">
+        <input type="text" id="pImage" placeholder="https://...">
+      </div>
+      <div id="imageFileInput" class="hidden">
+        <input type="file" id="pImageFile" accept="image/*" onchange="handleImageUpload()">
+        <p style="font-size:11px;color:#aaa;margin-top:4px">Max 5MB. Supported: JPG, PNG, GIF, WebP</p>
+        <div id="uploadProgress" class="hidden" style="margin-top:8px">
+          <div style="background:#0f3460;border-radius:4px;height:4px;overflow:hidden">
+            <div id="uploadBar" style="background:#27ae60;height:100%;width:0%;transition:width 0.3s"></div>
+          </div>
+          <p id="uploadStatus" style="font-size:11px;color:#aaa;margin-top:4px"></p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Stock Update Modal -->
+<div id="stockModal" class="modal-overlay hidden">
+  <div class="modal" style="width:360px">
+    <h3>Update Stock</h3>
+    <div id="stockAlert"></div>
+    <input type="hidden" id="stockProductId">
+    <p id="stockProductName" style="color:#aaa;margin-bottom:16px;font-size:14px"></p>
+    <div class="form-group"><label>New Stock Quantity</label><input type="number" id="newStockQty" min="0" placeholder="Enter new stock"></div>
+    <div class="form-group"><label>Reason</label>
+      <select id="stockReason">
+        <option value="restock">Restock</option>
+        <option value="adjustment">Adjustment</option>
+        <option value="return">Return</option>
+        <option value="damage">Damage/Loss</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeStockModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="updateStock()">Update Stock</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+let adminToken = localStorage.getItem('adminToken') || '';
+let allProducts = [];
+let allOrders = [];
+let uploadedImageUrl = '';
+
+// ── Image Upload Functions ───────────────────────────────────────────────────
+function toggleImageSource() {
+  const source = document.querySelector('input[name="imageSource"]:checked').value;
+  document.getElementById('imageUrlInput').classList.toggle('hidden', source === 'file');
+  document.getElementById('imageFileInput').classList.toggle('hidden', source === 'url');
+  
+  if (source === 'url') {
+    uploadedImageUrl = '';
+    document.getElementById('pImageFile').value = '';
+  } else {
+    document.getElementById('pImage').value = '';
+  }
+}
+
+async function handleImageUpload() {
+  const fileInput = document.getElementById('pImageFile');
+  const file = fileInput.files[0];
+  
+  if (!file) return;
+  
+  // Validate file size
+  if (file.size > 5 * 1024 * 1024) {
+    showAlert('productAlert', 'error', 'File size must be less than 5MB');
+    fileInput.value = '';
+    return;
+  }
+  
+  // Show progress
+  document.getElementById('uploadProgress').classList.remove('hidden');
+  document.getElementById('uploadBar').style.width = '0%';
+  document.getElementById('uploadStatus').textContent = 'Uploading...';
+  
+  const formData = new FormData();
+  formData.append('image', file);
+  
+  try {
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += 10;
+      if (progress <= 90) {
+        document.getElementById('uploadBar').style.width = progress + '%';
+      }
+    }, 100);
+    
+    const response = await fetch('/api/admin/upload-image', {
+      method: 'POST',
+      headers: { 'x-admin-token': adminToken },
+      body: formData
+    });
+    
+    clearInterval(progressInterval);
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      uploadedImageUrl = data.imageUrl;
+      document.getElementById('uploadBar').style.width = '100%';
+      document.getElementById('uploadStatus').textContent = '✓ Upload complete!';
+      document.getElementById('uploadStatus').style.color = '#27ae60';
+      setTimeout(() => {
+        document.getElementById('uploadProgress').classList.add('hidden');
+      }, 2000);
+    } else {
+      throw new Error(data.error || 'Upload failed');
+    }
+  } catch (error) {
+    document.getElementById('uploadBar').style.width = '0%';
+    document.getElementById('uploadStatus').textContent = '✗ Upload failed: ' + error.message;
+    document.getElementById('uploadStatus').style.color = '#e74c3c';
+    uploadedImageUrl = '';
+    fileInput.value = '';
+  }
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+async function login() {
+  const pw = document.getElementById('loginPassword').value;
+  try {
+    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password:pw}) });
+    const d = await r.json();
+    if (d.success) {
+      adminToken = d.token;
+      localStorage.setItem('adminToken', adminToken);
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      loadDashboard();
+    } else {
+      showAlert('loginAlert', 'error', d.error || 'Invalid password');
+    }
+  } catch { showAlert('loginAlert', 'error', 'Cannot connect to server'); }
+}
+
+function logout() {
+  localStorage.removeItem('adminToken');
+  adminToken = '';
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+// Auto-login if token exists
+if (adminToken) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  loadDashboard();
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showPage(page) {
+  ['dashboard','products','orders','stock'].forEach(p => {
+    document.getElementById('page-'+p).classList.add('hidden');
+    document.getElementById('nav-'+p).classList.remove('active');
+  });
+  document.getElementById('page-'+page).classList.remove('hidden');
+  document.getElementById('nav-'+page).classList.add('active');
+  const titles = {dashboard:'Dashboard',products:'Products Management',orders:'All Orders',stock:'Stock History'};
+  document.getElementById('pageTitle').textContent = titles[page];
+  
+  // Close mobile menu after selection
+  if (window.innerWidth <= 768) {
+    toggleMobileMenu();
+  }
+  
+  if (page==='dashboard') loadDashboard();
+  if (page==='products') loadProducts();
+  if (page==='orders') loadOrders();
+  if (page==='stock') loadStockHistory();
+}
+
+// ── Mobile Menu Toggle ────────────────────────────────────────────────────────
+function toggleMobileMenu() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+}
+
+// ── API Helper ────────────────────────────────────────────────────────────────
+async function api(method, url, body) {
+  const opts = { method, headers: {'Content-Type':'application/json','x-admin-token':adminToken} };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  return r.json();
+}
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  const [pd, od] = await Promise.all([api('GET','/api/admin/products'), api('GET','/api/admin/orders')]);
+  allProducts = pd.products || [];
+  allOrders = od.orders || [];
+  document.getElementById('stat-products').textContent = allProducts.length;
+  document.getElementById('stat-orders').textContent = allOrders.length;
+  const revenue = allOrders.reduce((s,o) => s + (o.total||0), 0);
+  document.getElementById('stat-revenue').textContent = '₹' + revenue.toLocaleString('en-IN');
+  const lowStock = allProducts.filter(p => p.stock <= 5);
+  document.getElementById('stat-lowstock').textContent = lowStock.length;
+
+  const recent = allOrders.slice(0,10);
+  document.getElementById('recentOrdersTable').innerHTML = recent.length ? recent.map(o => `
+    <tr>
+      <td><code style="color:#c0392b;font-weight:600">${o.order_id}</code></td>
+      <td>${o.customer_name}</td>
+      <td>${Array.isArray(o.items) ? o.items.map(i=>i.name).join(', ') : '-'}</td>
+      <td><strong style="color:#27ae60">₹${(o.total||0).toLocaleString('en-IN')}</strong></td>
+      <td>${o.payment_method}</td>
+      <td>${o.order_date}</td>
+    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:#999">No orders yet</td></tr>';
+
+  document.getElementById('lowStockTable').innerHTML = lowStock.length ? lowStock.map(p => `
+    <tr>
+      <td>${p.name}</td>
+      <td><code style="color:#7f8c8d">${p.sku}</code></td>
+      <td><span class="badge ${p.stock===0?'badge-red':'badge-yellow'}">${p.stock} units</span></td>
+      <td><button class="btn btn-primary btn-sm" onclick="openStockModal(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.stock})">Update Stock</button></td>
+    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#27ae60">All products have sufficient stock ✓</td></tr>';
+}
+
+// ── Barcode Generation ───────────────────────────────────────────────────────
+function generateBarcode() {
+  const barcode = document.getElementById('pBarcode').value.trim();
+  if (!barcode || barcode.length < 8 || barcode.length > 13) {
+    showAlert('productAlert', 'error', 'Barcode must be 8-13 digits');
+    return;
+  }
+  
+  // Validate numeric
+  if (!/^\d+$/.test(barcode)) {
+    showAlert('productAlert', 'error', 'Barcode must contain only digits');
+    return;
+  }
+  
+  // Show preview
+  document.getElementById('barcodePreview').classList.remove('hidden');
+  document.getElementById('barcodeText').textContent = barcode;
+  
+  // Generate barcode image (using online service for demo, will be generated server-side on save)
+  const barcodeImg = document.getElementById('barcodeImage');
+  barcodeImg.innerHTML = `<svg id="barcodeSvg"></svg>`;
+  
+  // Simple code128-like barcode display
+  barcodeImg.innerHTML = `<img src="https://barcode.tec-it.com/barcode.ashx?data=${barcode}&code=Code128&translate=no" style="height:40px" alt="Barcode">`;
+}
+
+// ── Auto-generate barcode from product name ────────────────────────────────────
+function autoGenerateBarcode() {
+  const name = document.getElementById('pName').value.trim();
+  const category = document.getElementById('pCategory').value;
+  const sku = document.getElementById('pSKU').value.trim();
+  
+  if (!sku) return;
+  
+  // Generate barcode format: CATEGORY(1) + SKU + random
+  const catCode = {'indian':'1','western':'2','bridal':'3','accessories':'4'}[category] || '0';
+  const randomPart = Math.floor(Math.random() * 1000000000);
+  const barcode = catCode + sku.replace(/[^0-9]/g,'').padEnd(6,'0').substring(0,6) + String(randomPart).padEnd(6,'0').substring(0,6);
+  
+  document.getElementById('pBarcode').value = barcode.substring(0, 13);
+}
+async function loadProducts() {
+  const d = await api('GET','/api/admin/products');
+  allProducts = d.products || [];
+  renderProductsTable(allProducts);
+}
+
+function renderProductsTable(products) {
+  document.getElementById('productsTable').innerHTML = products.length ? products.map(p => `
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td><code style="color:#7f8c8d">${p.sku}</code></td>
+      <td><code style="color:#7f8c8d">${p.barcode}</code></td>
+      <td><span class="tag">${p.category}</span></td>
+      <td><strong style="color:#27ae60">₹${(p.price||0).toLocaleString('en-IN')}</strong></td>
+      <td><span class="badge ${p.stock<=5?'badge-red':p.stock<=15?'badge-yellow':'badge-green'}">${p.stock} units</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-secondary btn-sm" onclick="openEditProduct(${p.id})">Edit</button>
+        <button class="btn btn-primary btn-sm" onclick="openStockModal(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.stock})">Stock</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id},'${p.name.replace(/'/g,"\\'")}')">Delete</button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">No products found. Add your first product!</td></tr>';
+}
+
+function filterProducts() {
+  const q = document.getElementById('productSearch').value.toLowerCase();
+  renderProductsTable(allProducts.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.barcode||'').includes(q)));
+}
+
+function openAddProduct() {
+  document.getElementById('productModalTitle').textContent = 'Add New Product';
+  document.getElementById('productId').value = '';
+  ['pName','pDescription','pPrice','pStock','pSKU','pBarcode','pFabric','pOccasion','pSizes','pImage'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pCategory').value = 'indian';
+  document.getElementById('productAlert').innerHTML = '';
+  document.getElementById('pImageFile').value = '';
+  uploadedImageUrl = '';
+  document.querySelector('input[name="imageSource"][value="url"]').checked = true;
+  toggleImageSource();
+  document.getElementById('productModal').classList.remove('hidden');
+}
+
+function openEditProduct(id) {
+  const p = allProducts.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('productModalTitle').textContent = 'Edit Product';
+  document.getElementById('productId').value = p.id;
+  document.getElementById('pName').value = p.name || '';
+  document.getElementById('pDescription').value = p.description || '';
+  document.getElementById('pPrice').value = p.price || '';
+  document.getElementById('pStock').value = p.stock || '';
+  document.getElementById('pSKU').value = p.sku || '';
+  document.getElementById('pBarcode').value = p.barcode || '';
+  document.getElementById('pFabric').value = p.fabric || '';
+  document.getElementById('pOccasion').value = p.occasion || '';
+  document.getElementById('pSizes').value = Array.isArray(p.sizes) ? p.sizes.join(', ') : (p.sizes || '');
+  document.getElementById('pImage').value = p.image || '';
+  document.getElementById('pCategory').value = p.category || 'indian';
+  document.getElementById('productAlert').innerHTML = '';
+  document.getElementById('pImageFile').value = '';
+  uploadedImageUrl = '';
+  document.querySelector('input[name="imageSource"][value="url"]').checked = true;
+  toggleImageSource();
+  document.getElementById('productModal').classList.remove('hidden');
+}
+
+function closeProductModal() { document.getElementById('productModal').classList.add('hidden'); }
+
+async function saveProduct() {
+  const id = document.getElementById('productId').value;
+  const imageSource = document.querySelector('input[name="imageSource"]:checked').value;
+  
+  let imageUrl = '';
+  if (imageSource === 'url') {
+    imageUrl = document.getElementById('pImage').value.trim();
+  } else {
+    if (!uploadedImageUrl && !id) {
+      return showAlert('productAlert','error','Please upload an image or switch to URL mode');
+    }
+    imageUrl = uploadedImageUrl || document.getElementById('pImage').value.trim();
+  }
+  
+  const data = {
+    name: document.getElementById('pName').value.trim(),
+    description: document.getElementById('pDescription').value.trim(),
+    category: document.getElementById('pCategory').value,
+    price: parseFloat(document.getElementById('pPrice').value) || 0,
+    stock: parseInt(document.getElementById('pStock').value) || 0,
+    sku: document.getElementById('pSKU').value.trim(),
+    barcode: document.getElementById('pBarcode').value.trim(),
+    fabric: document.getElementById('pFabric').value.trim(),
+    occasion: document.getElementById('pOccasion').value.trim(),
+    sizes: document.getElementById('pSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
+    image: imageUrl,
+  };
+  if (!data.name || !data.sku || !data.barcode || !data.price) {
+    return showAlert('productAlert','error','Name, SKU, Barcode and Price are required');
+  }
+  const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
+  const method = id ? 'PUT' : 'POST';
+  const d = await api(method, url, data);
+  if (d.success) { closeProductModal(); loadProducts(); showToast(id ? 'Product updated!' : 'Product added!'); }
+  else showAlert('productAlert','error', d.error || 'Failed to save product');
+}
+
+async function deleteProduct(id, name) {
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  const d = await api('DELETE', `/api/admin/products/${id}`);
+  if (d.success) { loadProducts(); showToast('Product deleted'); }
+  else alert(d.error || 'Failed to delete');
+}
+
+// ── Stock Modal ───────────────────────────────────────────────────────────────
+function openStockModal(id, name, current) {
+  document.getElementById('stockProductId').value = id;
+  document.getElementById('stockProductName').textContent = `${name} — Current stock: ${current} units`;
+  document.getElementById('newStockQty').value = current;
+  document.getElementById('stockAlert').innerHTML = '';
+  document.getElementById('stockModal').classList.remove('hidden');
+}
+function closeStockModal() { document.getElementById('stockModal').classList.add('hidden'); }
+
+async function updateStock() {
+  const id = document.getElementById('stockProductId').value;
+  const stock = parseInt(document.getElementById('newStockQty').value);
+  const reason = document.getElementById('stockReason').value;
+  if (isNaN(stock) || stock < 0) return showAlert('stockAlert','error','Enter a valid stock quantity');
+  const d = await api('PUT', `/api/admin/products/${id}/stock`, {stock, reason});
+  if (d.success) { closeStockModal(); loadProducts(); loadDashboard(); showToast('Stock updated!'); }
+  else showAlert('stockAlert','error', d.error || 'Failed to update stock');
+}
+
+// ── Orders ────────────────────────────────────────────────────────────────────
+async function loadOrders() {
+  const d = await api('GET','/api/admin/orders');
+  allOrders = d.orders || [];
+  document.getElementById('ordersTable').innerHTML = allOrders.length ? allOrders.map(o => `
+    <tr>
+      <td><code style="color:#c0392b;font-weight:600">${o.order_id}</code></td>
+      <td>${o.customer_name}</td>
+      <td style="font-size:12px">${o.email}</td>
+      <td>${o.phone}</td>
+      <td style="font-size:12px">${Array.isArray(o.items)?o.items.map(i=>`${i.name} x${i.quantity}`).join('<br>'):'—'}</td>
+      <td><strong style="color:#27ae60">₹${(o.total||0).toLocaleString('en-IN')}</strong></td>
+      <td>${o.payment_method}</td>
+      <td><span class="badge ${o.payment_status==='Paid'?'badge-green':'badge-yellow'}">${o.payment_status}</span></td>
+      <td>${o.order_date}</td>
+    </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;padding:20px;color:#999">No orders yet</td></tr>';
+}
+
+// Export orders to Excel
+async function exportOrdersExcel() {
+  try {
+    const response = await fetch('/api/admin/orders/export-excel', {
+      method: 'GET',
+      headers: { 'x-admin-token': adminToken }
+    });
+    
+    if (!response.ok) throw new Error('Export failed');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `orders-export-${new Date().toISOString().slice(0,10)}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    showToast('Orders exported to Excel successfully!');
+  } catch (err) {
+    alert('Failed to export orders: ' + err.message);
+  }
+}
+
+// ── Stock History ─────────────────────────────────────────────────────────────
+async function loadStockHistory() {
+  const d = await fetch('/api/stock-history').then(r=>r.json());
+  const history = (d.history||[]).reverse();
+  document.getElementById('stockTable').innerHTML = history.length ? history.map(h => `
+    <tr>
+      <td>${h.product_name}</td>
+      <td>${h.old_stock}</td>
+      <td>${h.new_stock}</td>
+      <td><span class="badge ${h.change<0?'badge-red':'badge-green'}">${h.change>0?'+':''}${h.change}</span></td>
+      <td><span class="tag">${h.reason}</span></td>
+      <td style="font-size:12px;color:#7f8c8d">${new Date(h.timestamp).toLocaleString('en-IN')}</td>
+    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:#999">No stock history yet</td></tr>';
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showAlert(id, type, msg) {
+  document.getElementById(id).innerHTML = `<div class="alert alert-${type==='error'?'error':'success'}">${msg}</div>`;
+}
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#27ae60;color:#fff;padding:12px 20px;border-radius:8px;z-index:9999;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+</script>
+</body>
+</html>
