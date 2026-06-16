@@ -1,4 +1,4 @@
-/* ===== Global Styles ===== */
+===== Global Styles =====
 * {
     margin: 0;
     padding: 0;
@@ -869,7 +869,8 @@ body::after {
 /* Hero Slider Styles - RAW IMAGES, NO OVERLAY */
 .hero-slider {
     position: absolute;
-    top: 0;
+    top: 100;
+    bottom:100;
     left: 0;
     width: 100%;
     height: 100%;
@@ -899,11 +900,11 @@ body::after {
 }
 
 .hero-slide.active {
-    opacity: 1;
-    z-index: 1;
+    opacity: 0;
+    z-index: 0;
 }
 
-/* Content with strong shadows and glassmorphism for readability */
+Content with strong shadows and glassmorphism for readability
 .hero-content {
     position: relative;
     z-index: 2;
@@ -3190,7 +3191,7 @@ body::after {
     }
 
     .mobile-nav-toggle {
-        display: block;
+        display: flexbox;
     }
 
     .category-tabs {
@@ -3868,7 +3869,7 @@ body::after {
     z-index: 2;
     text-align: center;
     padding: 2rem;
-    max-width: 900px;
+    max-width: px;
 }
 
 .slider-btn {
