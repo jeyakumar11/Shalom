@@ -213,6 +213,22 @@ function adminAuth(req, res, next) {
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
+// Debug endpoint to check environment variables (REMOVE AFTER TESTING)
+app.get('/api/debug/env', (req, res) => {
+  res.json({
+    hasPostgresUrl: !!process.env.POSTGRES_URL,
+    hasCloudinaryName: !!process.env.CLOUDINARY_CLOUD_NAME,
+    hasCloudinaryKey: !!process.env.CLOUDINARY_API_KEY,
+    hasCloudinarySecret: !!process.env.CLOUDINARY_API_SECRET,
+    hasAdminPassword: !!process.env.ADMIN_PASSWORD,
+    hasAdminToken: !!process.env.ADMIN_TOKEN,
+    hasRazorpayKeyId: !!process.env.RAZORPAY_KEY_ID,
+    hasRazorpaySecret: !!process.env.RAZORPAY_KEY_SECRET,
+    hasEmailPassword: !!process.env.EMAIL_APP_PASSWORD,
+    nodeEnv: process.env.NODE_ENV
+  });
+});
+
 // UPI QR - NPCI CERTIFIED FORMAT
 app.get('/api/generate-qr', async (req, res) => {
   try {
@@ -621,7 +637,15 @@ app.post('/api/products/:id/reduce-stock', async (req, res) => {
 // Admin login
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
-  if (password === (process.env.ADMIN_PASSWORD || 'admin123')) {
+  const expectedPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  
+  console.log('Login attempt:', { 
+    providedPassword: password ? 'provided' : 'missing',
+    expectedPassword: expectedPassword ? 'set' : 'not set',
+    envVarExists: !!process.env.ADMIN_PASSWORD
+  });
+  
+  if (password === expectedPassword) {
     res.json({ success: true, token: ADMIN_TOKEN, message: 'Login successful' });
   } else {
     res.status(401).json({ success: false, error: 'Invalid password' });
