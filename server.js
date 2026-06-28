@@ -1,19 +1,26 @@
+// ═══════════════════════════════════════════════════════════════
+// Shalom Fashion - Express Server (Vercel Postgres + Cloudinary)
+// ✅ Updated for cloud deployment - All database calls use async/await
+// ═══════════════════════════════════════════════════════════════
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const QRCode = require('qrcode');
 const ExcelJS = require('exceljs');
 const nodemailer = require('nodemailer');
-const multer = require('multer');
 const fs = require('fs');
 const Razorpay = require('razorpay');
 require('dotenv').config();
-const { insertOrder, getAllOrders } = require('./database');
-const productsDB = require('./products-database');
-const showcaseDB = require('./showcase-database');
+
+// ═══ CLOUD STORAGE (Vercel Postgres + Cloudinary) ═══
+const { insertOrder, getAllOrders } = require('./database-postgres');
+const productsDB = require('./products-database-postgres');
+const showcaseDB = require('./showcase-database-postgres');
+const { upload } = require('./cloudinary-config');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const EXCEL_PATH = path.join(__dirname, 'orders.xlsx');
 
 // Initialize Razorpay instance
@@ -23,35 +30,34 @@ const razorpay = new Razorpay({
 });
 
 // ─── File Upload Configuration ────────────────────────────────────────────────
+// ✅ Now using Cloudinary (configured in cloudinary-config.js)
+// Old local storage commented out - images now stored in Cloudinary CDN
+
+// OLD LOCAL STORAGE (replaced by Cloudinary):
+/*
 const uploadDir = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
-
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
+  destination: (req, file, cb) => { cb(null, uploadDir); },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'product-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'));
-    }
+    if (mimetype && extname) { return cb(null, true); }
+    else { cb(new Error('Only image files are allowed!')); }
   }
 });
+*/
 
 // ─── Email Transporter ────────────────────────────────────────────────────────
 const emailTransporter = nodemailer.createTransport({
@@ -373,9 +379,9 @@ app.get('/api/payment/:payment_id', async (req, res) => {
 });
 
 // Get all products (public - for website display)
-app.get('/api/products', (req, res) => {
+app.get('/api/products', async (req, res) => {
   try {
-    const products = productsDB.getAllProducts();
+    const products = await productsDB.getAllProducts();
     res.json({ success: true, products, count: products.length });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch products' });
@@ -383,9 +389,9 @@ app.get('/api/products', (req, res) => {
 });
 
 // ─── Showcase Categories (Public) ────────────────────────────────────────────
-app.get('/api/showcase-categories', (req, res) => {
+app.get('/api/showcase-categories', async (req, res) => {
   try {
-    const categories = showcaseDB.getAllCategories();
+    const categories = await showcaseDB.getAllCategories();
     res.json({ success: true, categories });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch showcase categories' });
@@ -393,36 +399,36 @@ app.get('/api/showcase-categories', (req, res) => {
 });
 
 // ─── Showcase Categories (Admin) ─────────────────────────────────────────────
-app.get('/api/admin/showcase-categories', adminAuth, (req, res) => {
+app.get('/api/admin/showcase-categories', adminAuth, async (req, res) => {
   try {
-    res.json({ success: true, categories: showcaseDB.getAllCategoriesAdmin() });
+    res.json({ success: true, categories: await showcaseDB.getAllCategoriesAdmin() });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch categories' });
   }
 });
 
-app.post('/api/admin/showcase-categories', adminAuth, (req, res) => {
+app.post('/api/admin/showcase-categories', adminAuth, async (req, res) => {
   try {
     if (!req.body.name) return res.status(400).json({ success: false, error: 'Name is required' });
-    const category = showcaseDB.addCategory(req.body);
+    const category = await showcaseDB.addCategory(req.body);
     res.json({ success: true, category, message: 'Category added successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to add category' });
   }
 });
 
-app.put('/api/admin/showcase-categories/:id', adminAuth, (req, res) => {
+app.put('/api/admin/showcase-categories/:id', adminAuth, async (req, res) => {
   try {
-    const category = showcaseDB.updateCategory(req.params.id, req.body);
+    const category = await showcaseDB.updateCategory(req.params.id, req.body);
     res.json({ success: true, category, message: 'Category updated successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to update category' });
   }
 });
 
-app.delete('/api/admin/showcase-categories/:id', adminAuth, (req, res) => {
+app.delete('/api/admin/showcase-categories/:id', adminAuth, async (req, res) => {
   try {
-    showcaseDB.deleteCategory(req.params.id);
+    await showcaseDB.deleteCategory(req.params.id);
     res.json({ success: true, message: 'Category deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to delete category' });
@@ -430,9 +436,9 @@ app.delete('/api/admin/showcase-categories/:id', adminAuth, (req, res) => {
 });
 
 // Get product by barcode
-app.get('/api/products/barcode/:barcode', (req, res) => {
+app.get('/api/products/barcode/:barcode', async (req, res) => {
   try {
-    const product = productsDB.getProductByBarcode(req.params.barcode);
+    const product = await productsDB.getProductByBarcode(req.params.barcode);
     if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
     res.json({ success: true, product });
   } catch (err) {
@@ -441,9 +447,9 @@ app.get('/api/products/barcode/:barcode', (req, res) => {
 });
 
 // Get product by SKU
-app.get('/api/products/sku/:sku', (req, res) => {
+app.get('/api/products/sku/:sku', async (req, res) => {
   try {
-    const product = productsDB.getProductBySKU(req.params.sku);
+    const product = await productsDB.getProductBySKU(req.params.sku);
     if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
     res.json({ success: true, product });
   } catch (err) {
@@ -452,9 +458,9 @@ app.get('/api/products/sku/:sku', (req, res) => {
 });
 
 // Get product by ID
-app.get('/api/products/:id', (req, res) => {
+app.get('/api/products/:id', async (req, res) => {
   try {
-    const product = productsDB.getProductById(req.params.id);
+    const product = await productsDB.getProductById(req.params.id);
     if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
     res.json({ success: true, product });
   } catch (err) {
@@ -489,7 +495,7 @@ app.post('/api/place-order', async (req, res) => {
 
     // Stock validation - CHECK before reduction
     for (const item of items) {
-      const product = productsDB.getProductById(item.id);
+      const product = await productsDB.getProductById(item.id);
       if (!product) {
         return res.status(400).json({ success: false, error: `Product "${item.name}" not found` });
       }
@@ -507,10 +513,10 @@ app.post('/api/place-order', async (req, res) => {
     // ATOMIC TRANSACTION START: Reduce stock and track changes
     try {
       for (const item of items) {
-        const product = productsDB.getProductById(item.id);
+        const product = await productsDB.getProductById(item.id);
         const oldStock = product.stock;
         
-        productsDB.reduceStock(item.id, item.quantity, orderId);
+        await productsDB.reduceStock(item.id, item.quantity, orderId);
         
         // Track for rollback
         stockReductions.push({ 
@@ -539,7 +545,7 @@ app.post('/api/place-order', async (req, res) => {
       };
 
       // Insert order
-      insertOrder(orderData);
+      await insertOrder(orderData);
       await appendToExcel(orderData);
 
       // Send confirmation email (non-blocking)
@@ -554,7 +560,7 @@ app.post('/api/place-order', async (req, res) => {
       
       for (const reduction of stockReductions) {
         try {
-          productsDB.updateProductStock(reduction.productId, reduction.oldStock, 'rollback_' + orderId);
+          await productsDB.updateProductStock(reduction.productId, reduction.oldStock, 'rollback_' + orderId);
         } catch (rollbackError) {
           console.error(`Failed to rollback stock for product ${reduction.productId}:`, rollbackError);
         }
@@ -573,10 +579,14 @@ app.post('/api/place-order', async (req, res) => {
 });
 
 // Get all orders (public read for billing software)
-app.get('/api/orders', (req, res) => {
+app.get('/api/orders', async (req, res) => {
   try {
-    const orders = getAllOrders();
-    const parsed = orders.map(o => ({ ...o, items: JSON.parse(o.items) }));
+    const orders = await getAllOrders();
+    const parsed = orders.map(o => {
+      // Postgres returns items as JSONB (already parsed), but handle both cases
+      const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+      return { ...o, items };
+    });
     res.json({ success: true, orders: parsed, count: parsed.length });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch orders' });
@@ -584,9 +594,9 @@ app.get('/api/orders', (req, res) => {
 });
 
 // Stock history (public read)
-app.get('/api/stock-history', (req, res) => {
+app.get('/api/stock-history', async (req, res) => {
   try {
-    const history = productsDB.getStockHistory(req.query.product_id);
+    const history = await productsDB.getStockHistory(req.query.product_id);
     res.json({ success: true, history, count: history.length });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch stock history' });
@@ -594,11 +604,11 @@ app.get('/api/stock-history', (req, res) => {
 });
 
 // Reduce stock (called by billing software after in-store sale)
-app.post('/api/products/:id/reduce-stock', (req, res) => {
+app.post('/api/products/:id/reduce-stock', async (req, res) => {
   try {
     const { quantity, order_id } = req.body;
     if (!quantity || quantity <= 0) return res.status(400).json({ success: false, error: 'Invalid quantity' });
-    const product = productsDB.reduceStock(req.params.id, parseInt(quantity), order_id);
+    const product = await productsDB.reduceStock(req.params.id, parseInt(quantity), order_id);
     res.json({ success: true, product, message: 'Stock reduced successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to reduce stock' });
@@ -618,9 +628,9 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // Admin: get all products
-app.get('/api/admin/products', adminAuth, (req, res) => {
+app.get('/api/admin/products', adminAuth, async (req, res) => {
   try {
-    const products = productsDB.getAllProducts();
+    const products = await productsDB.getAllProducts();
     res.json({ success: true, products });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch products' });
@@ -633,17 +643,18 @@ app.post('/api/admin/upload-image', adminAuth, upload.single('image'), (req, res
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
     }
-    const imageUrl = `/uploads/${req.file.filename}`;
-    res.json({ success: true, imageUrl, message: 'Image uploaded successfully' });
+    // Cloudinary returns the URL in req.file.path
+    const imageUrl = req.file.path;
+    res.json({ success: true, imageUrl, message: 'Image uploaded successfully to Cloudinary' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to upload image' });
   }
 });
 
 // Admin: add product
-app.post('/api/admin/products', adminAuth, (req, res) => {
+app.post('/api/admin/products', adminAuth, async (req, res) => {
   try {
-    const product = productsDB.addProduct(req.body);
+    const product = await productsDB.addProduct(req.body);
     res.json({ success: true, product, message: 'Product added successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to add product' });
@@ -651,9 +662,9 @@ app.post('/api/admin/products', adminAuth, (req, res) => {
 });
 
 // Admin: update product (price, stock, details)
-app.put('/api/admin/products/:id', adminAuth, (req, res) => {
+app.put('/api/admin/products/:id', adminAuth, async (req, res) => {
   try {
-    const product = productsDB.updateProduct(req.params.id, req.body);
+    const product = await productsDB.updateProduct(req.params.id, req.body);
     res.json({ success: true, product, message: 'Product updated successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to update product' });
@@ -661,11 +672,11 @@ app.put('/api/admin/products/:id', adminAuth, (req, res) => {
 });
 
 // Admin: update stock only
-app.put('/api/admin/products/:id/stock', adminAuth, (req, res) => {
+app.put('/api/admin/products/:id/stock', adminAuth, async (req, res) => {
   try {
     const { stock, reason } = req.body;
     if (stock === undefined || stock < 0) return res.status(400).json({ success: false, error: 'Invalid stock value' });
-    const product = productsDB.updateProductStock(req.params.id, parseInt(stock), reason || 'admin_update');
+    const product = await productsDB.updateProductStock(req.params.id, parseInt(stock), reason || 'admin_update');
     res.json({ success: true, product, message: 'Stock updated successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to update stock' });
@@ -673,9 +684,9 @@ app.put('/api/admin/products/:id/stock', adminAuth, (req, res) => {
 });
 
 // Admin: delete product
-app.delete('/api/admin/products/:id', adminAuth, (req, res) => {
+app.delete('/api/admin/products/:id', adminAuth, async (req, res) => {
   try {
-    productsDB.deleteProduct(req.params.id);
+    await productsDB.deleteProduct(req.params.id);
     res.json({ success: true, message: 'Product deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to delete product' });
@@ -683,10 +694,13 @@ app.delete('/api/admin/products/:id', adminAuth, (req, res) => {
 });
 
 // Admin: get all orders
-app.get('/api/admin/orders', adminAuth, (req, res) => {
+app.get('/api/admin/orders', adminAuth, async (req, res) => {
   try {
-    const orders = getAllOrders();
-    const parsed = orders.map(o => ({ ...o, items: JSON.parse(o.items) }));
+    const orders = await getAllOrders();
+    const parsed = orders.map(o => {
+      const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+      return { ...o, items };
+    });
     res.json({ success: true, orders: parsed, count: parsed.length });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch orders' });
@@ -718,9 +732,9 @@ app.get('/api/admin/orders/export-excel', adminAuth, async (req, res) => {
     });
     
     // Add data
-    const orders = getAllOrders();
+    const orders = await getAllOrders();
     orders.forEach(order => {
-      const items = JSON.parse(order.items);
+      const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
       const itemsSummary = items.map(i => `${i.name} (${i.size || '-'}) x${i.quantity}`).join('; ');
       worksheet.addRow([
         order.order_id,
@@ -750,33 +764,24 @@ app.get('/api/admin/orders/export-excel', adminAuth, async (req, res) => {
 });
 
 // Admin: clear all products
-app.delete('/api/admin/products/clear-all', adminAuth, (req, res) => {
+app.delete('/api/admin/products/clear-all', adminAuth, async (req, res) => {
   try {
-    productsDB.clearAllProducts();
+    await productsDB.clearAllProducts();
     res.json({ success: true, message: 'All products cleared successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || 'Failed to clear products' });
   }
 });
 
-// Admin: backup products
+// Admin: backup products (not needed with Postgres - Vercel handles backups)
 app.post('/api/admin/products/backup', adminAuth, (req, res) => {
-  try {
-    const backupPath = productsDB.backupProducts();
-    if (backupPath) {
-      res.json({ success: true, backupPath, message: 'Products backed up successfully' });
-    } else {
-      res.status(500).json({ success: false, error: 'Failed to create backup' });
-    }
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message || 'Failed to create backup' });
-  }
+  res.json({ success: true, message: 'Automatic backups enabled via Vercel Postgres' });
 });
 
 // Admin: get database statistics
-app.get('/api/admin/database/stats', adminAuth, (req, res) => {
+app.get('/api/admin/database/stats', adminAuth, async (req, res) => {
   try {
-    const stats = productsDB.getDatabaseStats();
+    const stats = await productsDB.getDatabaseStats();
     if (stats) {
       res.json({ success: true, stats });
     } else {
@@ -788,9 +793,9 @@ app.get('/api/admin/database/stats', adminAuth, (req, res) => {
 });
 
 // Admin: add product with enhanced validation
-app.post('/api/admin/products/safe', adminAuth, (req, res) => {
+app.post('/api/admin/products/safe', adminAuth, async (req, res) => {
   try {
-    const product = productsDB.addProductSafe(req.body);
+    const product = await productsDB.addProductSafe(req.body);
     res.json({ success: true, product, message: 'Product added successfully with validation' });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message || 'Failed to add product' });
