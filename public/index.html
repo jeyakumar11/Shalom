@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shalom Fashion - Indian & Western Clothing</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Apply saved theme BEFORE paint to prevent flash -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <!-- Razorpay Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -18,8 +25,7 @@
             </button>
             <div class="logo">
                 <div class="logo-icon">
-                    <div class="woman-silhouette"></div>
-                    <div class="botanical-elements"></div>
+                    <img src="/images/shalom-logo.png" alt="Shalom Boutique" class="logo-img">
                 </div>
                 <div class="logo-text">
                     <h1>SHALOM BOUTIQUE</h1>
@@ -34,12 +40,9 @@
                 <a href="#accessories" class="nav-link">Accessories</a>
                 <a href="#about" class="nav-link">About</a>
             </nav>
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Pull to switch theme">
-                <div class="bulb-container">
-                    <div class="bulb-rope"></div>
-                    <i class="fas fa-lightbulb bulb-icon"></i>
-                </div>
-            toggleThemeWithBulb</button>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Switch theme">
+                <i class="fas fa-circle-half-stroke"></i>
+            </button>
             <div class="cart-icon" onclick="toggleCart()">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="cart-count" id="cartCount">0</span>
@@ -59,39 +62,39 @@
     <!-- Hero Section with Slider -->
     <section class="hero" id="home">
         <div class="hero-slider">
+            <!-- Slide 1: Saree — Bridal Elegance -->
             <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600');">
+                <div class="hero-slide-logo-bg"></div>
                 <div class="hero-content">
-                    <img src="/images/shalom-logo.png" alt="Shalom Boutique" class="hero-logo">
-                    <h2 class="hero-title">Fashion Redefined</h2>
-                    <p class="hero-subtitle">Discover the perfect blend of Indian tradition, Western style, and Bridal elegance</p>
+                    <h2 class="hero-title">Bridal Elegance</h2>
+                    <p class="hero-subtitle">Where tradition meets timeless grace — handpicked Indian wear for every celebration</p>
                     <div class="hero-buttons">
                         <button class="btn btn-primary" onclick="scrollToSection('indian')">
-                            <i class="fas fa-dharmachakra"></i> Indian Collection
-                        </button>
-                        <button class="btn btn-secondary" onclick="scrollToSection('bridal')">
-                            <i class="fas fa-ring"></i> Bridal Collection
+                            <i class="fas fa-dharmachakra"></i> Indian Collections
                         </button>
                     </div>
                 </div>
             </div>
+            <!-- Slide 2: Red dress — Western Elegance -->
             <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1600');">
                 <div class="hero-content">
-                    <h2 class="hero-title">Bridal Excellence</h2>
-                    <p class="hero-subtitle">Your dream wedding outfit awaits</p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary" onclick="scrollToSection('bridal')">
-                            <i class="fas fa-ring"></i> Explore Bridal
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=1600');">
-                <div class="hero-content">
                     <h2 class="hero-title">Western Elegance</h2>
-                    <p class="hero-subtitle">Modern styles for the contemporary you</p>
+                    <p class="hero-subtitle">Bold, modern and effortlessly chic — styles made for the contemporary woman</p>
                     <div class="hero-buttons">
                         <button class="btn btn-primary" onclick="scrollToSection('western')">
                             <i class="fas fa-tshirt"></i> Shop Western
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 3: Black coat — Classy Sophistication -->
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=1600');">
+                <div class="hero-content">
+                    <h2 class="hero-title">Classy Sophistication</h2>
+                    <p class="hero-subtitle">Refined details, premium finishes — complete your look with our exclusive accessories</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="scrollToSection('accessories')">
+                            <i class="fas fa-gem"></i> Shop Accessories
                         </button>
                     </div>
                 </div>
@@ -126,6 +129,16 @@
                 <button class="tab-btn" onclick="showCategory('accessories')" data-category="accessories">
                     <i class="fas fa-gem"></i> Accessories
                 </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Fashion Showcase Strip ===== -->
+    <section class="showcase-section" id="fashionShowcase">
+        <div class="container">
+            <h2 class="showcase-heading">Shop by Style</h2>
+            <div class="showcase-strip" id="showcaseStrip">
+                <!-- Populated by app.js -->
             </div>
         </div>
     </section>

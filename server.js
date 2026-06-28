@@ -10,6 +10,7 @@ const Razorpay = require('razorpay');
 require('dotenv').config();
 const { insertOrder, getAllOrders } = require('./database');
 const productsDB = require('./products-database');
+const showcaseDB = require('./showcase-database');
 
 const app = express();
 const PORT = 3001;
@@ -378,6 +379,53 @@ app.get('/api/products', (req, res) => {
     res.json({ success: true, products, count: products.length });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to fetch products' });
+  }
+});
+
+// ─── Showcase Categories (Public) ────────────────────────────────────────────
+app.get('/api/showcase-categories', (req, res) => {
+  try {
+    const categories = showcaseDB.getAllCategories();
+    res.json({ success: true, categories });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch showcase categories' });
+  }
+});
+
+// ─── Showcase Categories (Admin) ─────────────────────────────────────────────
+app.get('/api/admin/showcase-categories', adminAuth, (req, res) => {
+  try {
+    res.json({ success: true, categories: showcaseDB.getAllCategoriesAdmin() });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch categories' });
+  }
+});
+
+app.post('/api/admin/showcase-categories', adminAuth, (req, res) => {
+  try {
+    if (!req.body.name) return res.status(400).json({ success: false, error: 'Name is required' });
+    const category = showcaseDB.addCategory(req.body);
+    res.json({ success: true, category, message: 'Category added successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message || 'Failed to add category' });
+  }
+});
+
+app.put('/api/admin/showcase-categories/:id', adminAuth, (req, res) => {
+  try {
+    const category = showcaseDB.updateCategory(req.params.id, req.body);
+    res.json({ success: true, category, message: 'Category updated successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message || 'Failed to update category' });
+  }
+});
+
+app.delete('/api/admin/showcase-categories/:id', adminAuth, (req, res) => {
+  try {
+    showcaseDB.deleteCategory(req.params.id);
+    res.json({ success: true, message: 'Category deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message || 'Failed to delete category' });
   }
 });
 

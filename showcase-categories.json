@@ -1,0 +1,92 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "College Wear",
+      "subtitle": "",
+      "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600",
+      "category": "indian",
+      "filterTag": "college",
+      "active": true,
+      "sort_order": 1,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 2,
+      "name": "Ethnic Sarees",
+      "subtitle": "",
+      "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600",
+      "category": "indian",
+      "filterTag": "saree",
+      "active": true,
+      "sort_order": 2,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 3,
+      "name": "Elegant Designs",
+      "subtitle": "",
+      "image": "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=600",
+      "category": "indian",
+      "filterTag": "",
+      "active": true,
+      "sort_order": 3,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 4,
+      "name": "Mens Wear",
+      "subtitle": "",
+      "image": "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=600",
+      "category": "western",
+      "filterTag": "mens",
+      "active": true,
+      "sort_order": 4,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 5,
+      "name": "Christian Bridal",
+      "subtitle": "bridal wear",
+      "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600",
+      "category": "bridal",
+      "filterTag": "christian",
+      "active": true,
+      "sort_order": 5,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 6,
+      "name": "Bridal Wear",
+      "subtitle": "",
+      "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600",
+      "category": "bridal",
+      "filterTag": "",
+      "active": true,
+      "sort_order": 6,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 7,
+      "name": "Skirts",
+      "subtitle": "Contemporary/Fusion",
+      "image": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600",
+      "category": "western",
+      "filterTag": "skirt",
+      "active": true,
+      "sort_order": 7,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    },
+    {
+      "id": 8,
+      "name": "Contemporary/Fusion",
+      "subtitle": "Modern Styles",
+      "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600",
+      "category": "western",
+      "filterTag": "",
+      "active": true,
+      "sort_order": 8,
+      "created_at": "2026-06-20T17:06:05.396Z"
+    }
+  ]
+}

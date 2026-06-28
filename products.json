@@ -26,7 +26,7 @@
       "description": "Yellow coat for indian wear",
       "category": "indian",
       "price": 1,
-      "stock": 192,
+      "stock": 191,
       "sku": "SF-YW-001",
       "barcode": "2i3234923",
       "fabric": "Satin",
@@ -40,7 +40,7 @@
       ],
       "image": "/uploads/product-1780938183097-643414909.jpeg",
       "created_at": "2026-06-08T17:04:10.941Z",
-      "updated_at": "2026-06-10T08:30:07.904Z"
+      "updated_at": "2026-06-28T17:00:41.744Z"
     },
     {
       "id": 3,
@@ -70,7 +70,7 @@
       "description": "Christian Bridal Wedding costume",
       "category": "bridal",
       "price": 100,
-      "stock": 109,
+      "stock": 108,
       "sku": "SF-WCB-001",
       "barcode": "9237498237",
       "fabric": "Polyster",
@@ -84,7 +84,25 @@
       ],
       "image": "/uploads/product-1780938610745-963601953.png",
       "created_at": "2026-06-08T17:09:58.746Z",
-      "updated_at": "2026-06-08T17:10:12.476Z"
+      "updated_at": "2026-06-20T10:29:05.317Z"
+    },
+    {
+      "id": 5,
+      "name": "Antique Silver Leaf Drop Earrings - Red",
+      "description": "Elegant handcrafted statement earrings featuring an antique silver floral top with a glossy leaf-shaped resin drop. Lightweight, stylish, and perfect for casual, festive, and party wear.",
+      "category": "accessories",
+      "price": 299,
+      "stock": 45,
+      "sku": "EAR-RED-001",
+      "barcode": "1234567897456",
+      "fabric": "Alloy & Resin",
+      "occasion": "Casual, Party, Festive, Wedding",
+      "sizes": [
+        "Free Size"
+      ],
+      "image": "/uploads/product-1781953093014-956589840.jpeg",
+      "created_at": "2026-06-20T10:58:30.701Z",
+      "updated_at": "2026-06-20T10:58:30.701Z"
     }
   ],
   "stock_history": [
@@ -197,6 +215,26 @@
       "change": -1,
       "reason": "order_SF-20260610-6932",
       "timestamp": "2026-06-10T08:30:07.904Z"
+    },
+    {
+      "id": 12,
+      "product_id": 4,
+      "product_name": "White Christian Bridal Costume",
+      "old_stock": 109,
+      "new_stock": 108,
+      "change": -1,
+      "reason": "order_SF-20260620-3067",
+      "timestamp": "2026-06-20T10:29:05.317Z"
+    },
+    {
+      "id": 13,
+      "product_id": 2,
+      "product_name": "Yellow Coat",
+      "old_stock": 192,
+      "new_stock": 191,
+      "change": -1,
+      "reason": "order_SF-20260628-3413",
+      "timestamp": "2026-06-28T17:00:41.744Z"
     }
   ]
 }

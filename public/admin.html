@@ -3,131 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shalom Fashion - Admin Panel</title>
+<title>Shalom Fashion — Admin</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;background:#f5f7fa;color:#2c3e50;min-height:100vh}
+/* ── Liquid Glass Admin UI ───────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&display=swap');
 
-/* Login Screen */
-.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px}
-.login-box{background:#fff;padding:40px;border-radius:16px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.login-box h1{text-align:center;color:#c0392b;margin-bottom:8px;font-size:24px}
-.login-box p{text-align:center;color:#7f8c8d;margin-bottom:24px;font-size:14px}
+:root {
+  --glass:        rgba(255,255,255,0.08);
+  --glass-strong: rgba(255,255,255,0.14);
+  --glass-border: rgba(255,255,255,0.14);
+  --glass-dim:    rgba(255,255,255,0.06);
+  --blur-sm:  blur(8px);
+  --blur-md:  blur(18px);
+  --blur-lg:  blur(32px);
+  --bg:       #0d1117;
+  --surface:  rgba(15,23,42,0.92);
+  --t1: rgba(255,255,255,0.95);
+  --t2: rgba(255,255,255,0.65);
+  --t3: rgba(255,255,255,0.38);
+  --green:  #4ade80;
+  --cyan:   #67e8f9;
+  --gold:   #d4af37;
+  --red:    #f87171;
+  --yellow: #fbbf24;
+  --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 26px; --r-pill: 9999px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.16);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.44);
+}
 
-/* Form Elements */
-.form-group{margin-bottom:16px}
-.form-group label{display:block;margin-bottom:6px;font-size:13px;color:#555;font-weight:500}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;background:#fff;border:1px solid #ddd;border-radius:8px;color:#2c3e50;font-size:14px;outline:none;transition:border-color .2s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,0.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);
+  min-height:100vh;overflow-x:hidden;line-height:1.6;
+  background-image:
+    radial-gradient(ellipse 100% 70% at 15% 10%, rgba(74,222,128,0.07) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 90%, rgba(103,232,249,0.05) 0%,transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(212,175,55,0.03) 0%,transparent 40%);
+  background-attachment:fixed;
+}
 
-/* Buttons */
-.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
-.btn-primary{background:#c0392b;color:#fff}.btn-primary:hover{background:#a93226;transform:translateY(-1px);box-shadow:0 4px 12px rgba(192,57,43,0.3)}
-.btn-success{background:#27ae60;color:#fff}.btn-success:hover{background:#219a52;transform:translateY(-1px);box-shadow:0 4px 12px rgba(39,174,96,0.3)}
-.btn-danger{background:#e74c3c;color:#fff}.btn-danger:hover{background:#c0392b;transform:translateY(-1px)}
-.btn-secondary{background:#95a5a6;color:#fff}.btn-secondary:hover{background:#7f8c8d}
-.btn-sm{padding:6px 12px;font-size:12px}
-.btn-full{width:100%}
-.btn:disabled{opacity:0.6;cursor:not-allowed}
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.22)}
 
-/* Layout */
+/* ── Utilities ─────────────────────────────────────────────────── */
 .hidden{display:none!important}
-.app{display:flex;min-height:100vh;background:#f5f7fa}
-.sidebar{width:260px;background:#fff;padding:20px 0;flex-shrink:0;box-shadow:2px 0 10px rgba(0,0,0,0.05);border-right:1px solid #e8ecef}
-.sidebar-logo{padding:0 20px 20px;border-bottom:2px solid #f0f3f5}
-.sidebar-logo h2{color:#c0392b;font-size:20px;display:flex;align-items:center;gap:8px}
-.sidebar-logo p{color:#7f8c8d;font-size:12px;margin-top:4px}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:#7f8c8d;font-size:14px;transition:all .2s;margin:4px 10px;border-radius:8px}
-.nav-item:hover{background:#f8f9fa;color:#2c3e50}
-.nav-item.active{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;box-shadow:0 4px 12px rgba(192,57,43,0.3)}
-.nav-item span{font-size:18px}
 
-/* Main Content */
-.main{flex:1;overflow:auto;background:#f5f7fa}
-.topbar{background:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8ecef;box-shadow:0 2px 8px rgba(0,0,0,0.05);flex-wrap:wrap;gap:12px}
-.topbar h1{font-size:20px;color:#2c3e50}
-.content{padding:24px}
-.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e8ecef}
-.card h3{margin-bottom:16px;color:#2c3e50;font-size:16px;border-bottom:2px solid #f0f3f5;padding-bottom:10px}
+/* ── Login ─────────────────────────────────────────────────────── */
+.login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;
+}
+.login-box{
+  background:rgba(15,23,42,0.88);
+  backdrop-filter:var(--blur-lg) saturate(180%);
+  -webkit-backdrop-filter:var(--blur-lg) saturate(180%);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r-xl);box-shadow:var(--shadow-lg);
+  padding:2.5rem;width:100%;max-width:400px;
+  animation:fadeUp .5s ease;
+}
+.login-box h1{
+  text-align:center;font-family:'Playfair Display',serif;font-size:1.7rem;
+  background:linear-gradient(135deg,#fff 50%,rgba(74,222,128,.85));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.35rem;
+}
+.login-box>p{text-align:center;color:var(--t3);font-size:.85rem;margin-bottom:1.5rem}
 
-/* Stats Grid */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
-.stat-card{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e8ecef;transition:transform .2s}
-.stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.12)}
-.stat-card .value{font-size:32px;font-weight:700;color:#c0392b;margin-bottom:8px}
-.stat-card .label{font-size:13px;color:#7f8c8d;text-transform:uppercase;letter-spacing:0.5px}
+/* ── Forms ─────────────────────────────────────────────────────── */
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;margin-bottom:.4rem;font-size:.8rem;font-weight:500;color:var(--t2)}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:.7rem 1rem;
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--glass-dim);border-radius:var(--r-md);
+  color:var(--t1);font-size:.88rem;outline:none;transition:all .2s;font-family:inherit;
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--t3)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:rgba(74,222,128,.4);background:rgba(255,255,255,.10);
+  box-shadow:0 0 0 3px rgba(74,222,128,.08);
+}
+.form-group select option{background:#1e293b;color:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
 
-/* Tables */
-.table-container{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:800px}
-th{background:#f8f9fa;padding:12px;text-align:left;color:#555;font-weight:600;border-bottom:2px solid #e8ecef;white-space:nowrap}
-td{padding:12px;border-bottom:1px solid #f0f3f5;color:#2c3e50}
-tr:hover td{background:#f8f9fa}
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn{
+  padding:.65rem 1.4rem;border:1px solid transparent;border-radius:var(--r-pill);
+  font-size:.85rem;font-weight:600;cursor:pointer;transition:all .22s;
+  display:inline-flex;align-items:center;gap:.4rem;font-family:inherit;
+  backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);
+}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-primary{background:rgba(74,222,128,.15);color:var(--green);border-color:rgba(74,222,128,.3);box-shadow:0 4px 14px rgba(74,222,128,.12)}
+.btn-primary:hover{background:rgba(74,222,128,.24);border-color:rgba(74,222,128,.5);box-shadow:0 6px 20px rgba(74,222,128,.22);transform:translateY(-1px)}
+.btn-success{background:rgba(74,222,128,.15);color:var(--green);border-color:rgba(74,222,128,.28)}
+.btn-success:hover{background:rgba(74,222,128,.24);transform:translateY(-1px)}
+.btn-danger{background:rgba(248,113,113,.14);color:var(--red);border-color:rgba(248,113,113,.28)}
+.btn-danger:hover{background:rgba(248,113,113,.22);transform:translateY(-1px)}
+.btn-secondary{background:rgba(255,255,255,.07);color:var(--t2);border-color:var(--glass-dim)}
+.btn-secondary:hover{background:rgba(255,255,255,.12);color:var(--t1)}
+.btn-sm{padding:.4rem .9rem;font-size:.78rem}
+.btn-full{width:100%;justify-content:center}
 
-/* Badges */
-.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block}
-.badge-green{background:#d4edda;color:#155724}
-.badge-red{background:#f8d7da;color:#721c24}
-.badge-yellow{background:#fff3cd;color:#856404}
+/* ── App Layout ─────────────────────────────────────────────────── */
+.app{display:flex;min-height:100vh}
 
-/* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-.modal{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.modal h3{margin-bottom:20px;color:#2c3e50;font-size:18px}
-.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* ── Sidebar ────────────────────────────────────────────────────── */
+.sidebar{
+  width:250px;flex-shrink:0;display:flex;flex-direction:column;
+  background:rgba(13,17,23,0.90);
+  backdrop-filter:var(--blur-lg) saturate(180%);
+  -webkit-backdrop-filter:var(--blur-lg) saturate(180%);
+  border-right:1px solid var(--glass-dim);
+  box-shadow:2px 0 20px rgba(0,0,0,.20);z-index:100;
+}
+.sidebar-logo{padding:1.5rem 1.25rem 1.25rem;border-bottom:1px solid var(--glass-dim)}
+.sidebar-logo h2{
+  font-family:'Playfair Display',serif;font-size:1.15rem;
+  background:linear-gradient(135deg,#fff 50%,rgba(74,222,128,.85));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:flex;align-items:center;gap:.6rem;margin-bottom:.2rem;
+}
+.sidebar-logo h2 i{color:var(--green);-webkit-text-fill-color:var(--green)}
+.sidebar-logo p{color:var(--t3);font-size:.75rem;padding-left:1.6rem}
 
-/* Alerts */
-.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px}
-.alert-success{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
-.alert-error{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+.sidebar-nav{padding:.75rem 0;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.75rem 1.25rem;cursor:pointer;
+  color:var(--t2);font-size:.875rem;font-weight:500;
+  transition:all .2s;margin:.2rem .6rem;border-radius:var(--r-md);
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:var(--t1)}
+.nav-item.active{
+  background:rgba(74,222,128,.12);color:var(--green);
+  border:1px solid rgba(74,222,128,.22);
+  box-shadow:0 2px 12px rgba(74,222,128,.10);
+}
+.nav-item span{font-size:1rem;flex-shrink:0}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid var(--glass-dim)}
 
-/* Search Bar */
-.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.search-bar input{flex:1;min-width:200px;padding:10px 14px;background:#fff;border:1px solid #ddd;border-radius:8px;color:#2c3e50;font-size:13px;outline:none}
-.search-bar input:focus{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,0.1)}
+/* ── Main ────────────────────────────────────────────────────────── */
+.main{flex:1;overflow:auto;display:flex;flex-direction:column;min-width:0}
+.topbar{
+  padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;
+  background:rgba(13,17,23,0.75);
+  backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);
+  border-bottom:1px solid var(--glass-dim);
+  position:sticky;top:0;z-index:50;flex-wrap:wrap;gap:.75rem;
+}
+.topbar h1{font-size:1.1rem;font-weight:600;color:var(--t1)}
+.topbar-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.topbar-badge{font-size:.75rem;color:var(--t3);padding:.3rem .8rem;background:rgba(255,255,255,.05);border:1px solid var(--glass-dim);border-radius:var(--r-pill)}
 
-/* Tags */
-.tag{display:inline-block;padding:4px 10px;border-radius:4px;font-size:11px;background:#e8ecef;color:#555;margin:2px}
+.content{padding:1.5rem;flex:1}
 
-/* Mobile Hamburger Menu */
-.mobile-menu-btn{display:none;background:none;border:none;font-size:24px;color:#2c3e50;cursor:pointer;padding:8px}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998}
+/* ── Cards ───────────────────────────────────────────────────────── */
+.card{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);
+  border:1px solid var(--glass-dim);border-radius:var(--r-xl);
+  padding:1.5rem;margin-bottom:1.25rem;
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.06);
+  transition:transform .25s,box-shadow .25s;
+}
+.card h3{
+  margin-bottom:1.25rem;color:var(--t1);font-size:.92rem;font-weight:600;
+  border-bottom:1px solid var(--glass-dim);padding-bottom:.75rem;
+  display:flex;align-items:center;gap:.5rem;letter-spacing:.03em;text-transform:uppercase;
+}
+.card h3 i{color:var(--green);font-size:.85rem}
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .sidebar{position:fixed;left:-280px;top:0;bottom:0;width:260px;z-index:999;transition:left .3s;box-shadow:4px 0 20px rgba(0,0,0,0.2)}
+/* ── Stats Grid ──────────────────────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{
+  background:rgba(255,255,255,.06);
+  backdrop-filter:var(--blur-md) saturate(160%);-webkit-backdrop-filter:var(--blur-md) saturate(160%);
+  border:1px solid var(--glass-dim);border-radius:var(--r-xl);
+  padding:1.5rem;text-align:center;cursor:default;
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.08);
+  transition:all .28s;
+}
+.stat-card:hover{transform:translateY(-5px);border-color:rgba(74,222,128,.22);box-shadow:0 16px 40px rgba(0,0,0,.30),0 0 0 1px rgba(74,222,128,.12)}
+.stat-card .value{font-size:2.2rem;font-weight:700;margin-bottom:.4rem;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-card .label{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+.table-container{overflow-x:auto;border-radius:var(--r-lg);margin-top:.5rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:700px}
+th{
+  padding:.8rem 1rem;text-align:left;color:var(--t3);font-weight:600;
+  font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;
+  background:rgba(255,255,255,.04);border-bottom:1px solid var(--glass-dim);white-space:nowrap;
+}
+td{padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--t2);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.03);color:var(--t1)}
+tr:last-child td{border-bottom:none}
+
+/* ── Badges ──────────────────────────────────────────────────────── */
+.badge{padding:.25rem .7rem;border-radius:var(--r-pill);font-size:.72rem;font-weight:600;display:inline-block;border:1px solid}
+.badge-green{background:rgba(74,222,128,.14);color:var(--green);border-color:rgba(74,222,128,.28)}
+.badge-red{background:rgba(248,113,113,.14);color:var(--red);border-color:rgba(248,113,113,.28)}
+.badge-yellow{background:rgba(251,191,36,.14);color:var(--yellow);border-color:rgba(251,191,36,.28)}
+
+/* ── Modals ──────────────────────────────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;z-index:1000;padding:1.25rem;
+}
+.modal{
+  background:rgba(15,23,42,.93);
+  backdrop-filter:var(--blur-lg) saturate(180%);-webkit-backdrop-filter:var(--blur-lg) saturate(180%);
+  border:1px solid var(--glass-border);border-radius:var(--r-xl);
+  padding:2rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.08);
+  animation:fadeUp .3s cubic-bezier(.34,1.56,.64,1);
+}
+.modal h3{margin-bottom:1.5rem;color:var(--t1);font-size:1.05rem;font-weight:600}
+.modal-footer{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;flex-wrap:wrap}
+
+/* ── Alerts ──────────────────────────────────────────────────────── */
+.alert{padding:.8rem 1.1rem;border-radius:var(--r-md);margin-bottom:1rem;font-size:.82rem;border:1px solid}
+.alert-success{background:rgba(74,222,128,.10);color:var(--green);border-color:rgba(74,222,128,.25)}
+.alert-error{background:rgba(248,113,113,.10);color:var(--red);border-color:rgba(248,113,113,.25)}
+
+/* ── Search Bar ──────────────────────────────────────────────────── */
+.search-bar{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+.search-bar input{
+  flex:1;min-width:200px;padding:.65rem 1rem;
+  background:rgba(255,255,255,.07);border:1px solid var(--glass-dim);
+  border-radius:var(--r-pill);color:var(--t1);font-size:.82rem;outline:none;transition:all .2s;
+}
+.search-bar input::placeholder{color:var(--t3)}
+.search-bar input:focus{border-color:rgba(74,222,128,.38);background:rgba(255,255,255,.10);box-shadow:0 0 0 3px rgba(74,222,128,.08)}
+
+/* ── Tags ────────────────────────────────────────────────────────── */
+.tag{display:inline-block;padding:.2rem .6rem;border-radius:var(--r-sm);font-size:.72rem;background:rgba(255,255,255,.08);border:1px solid var(--glass-dim);color:var(--t2);margin:2px}
+
+/* ── Mobile ──────────────────────────────────────────────────────── */
+.mobile-menu-btn{display:none;background:rgba(255,255,255,.08);border:1px solid var(--glass-dim);color:var(--t1);padding:.5rem .7rem;border-radius:var(--r-md);cursor:pointer;font-size:1rem}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-270px;top:0;bottom:0;width:250px;z-index:999;transition:left .3s}
   .sidebar.active{left:0}
   .sidebar-overlay.active{display:block}
-  .mobile-menu-btn{display:block}
-  .topbar{padding:12px 16px}
-  .topbar h1{font-size:18px}
-  .content{padding:16px}
-  .stats-grid{grid-template-columns:1fr 1fr;gap:12px}
-  .stat-card{padding:16px}
-  .stat-card .value{font-size:24px}
-  .form-row{grid-template-columns:1fr}
-  .modal{padding:20px;max-width:95vw}
+  .mobile-menu-btn{display:inline-flex;align-items:center;gap:.4rem}
+  .topbar{padding:.85rem 1rem}
+  .content{padding:1rem}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:.75rem}
+  .stat-card .value{font-size:1.6rem}
+  .modal{padding:1.5rem;max-width:95vw;max-height:95vh}
   .modal-footer{flex-direction:column}
   .modal-footer .btn{width:100%}
-  .card{padding:16px}
-  table{font-size:12px}
-  th,td{padding:8px}
-  .btn-sm{font-size:11px;padding:5px 10px}
+  th,td{padding:.65rem .75rem}
 }
-
-@media (max-width: 480px) {
+@media(max-width:480px){
   .stats-grid{grid-template-columns:1fr}
-  .login-box{padding:24px}
-  .topbar{flex-direction:column;align-items:flex-start}
-  .stat-card .value{font-size:20px}
+  .stat-card .value{font-size:1.4rem}
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-track{background:#f0f3f5}
-::-webkit-scrollbar-thumb{background:#c0c9d1;border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:#a0a9b1}
+/* ── Image upload ────────────────────────────────────────────────── */
+.progress-bar-wrap{background:rgba(255,255,255,.07);border-radius:4px;height:4px;overflow:hidden;margin-top:.5rem}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .3s;width:0}
+
+/* ── Animations ──────────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -136,96 +286,93 @@ tr:hover td{background:#f8f9fa}
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <h1>🌸 Shalom Fashion</h1>
-    <p>Admin Panel - Secure Login</p>
+    <p>Admin Panel — Secure Access</p>
     <div id="loginAlert"></div>
     <div class="form-group">
       <label>Admin Password</label>
-      <input type="password" id="loginPassword" placeholder="Enter admin password" onkeypress="if(event.key==='Enter')login()">
+      <input type="password" id="loginPassword" placeholder="Enter password" onkeypress="if(event.key==='Enter')login()">
     </div>
-    <button class="btn btn-primary btn-full" onclick="login()">Login to Admin Panel</button>
-    <p style="text-align:center;margin-top:16px;font-size:12px;color:#666">Default password: admin123</p>
+    <button class="btn btn-primary btn-full" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login</button>
+    <p style="text-align:center;margin-top:1rem;font-size:.75rem;color:rgba(255,255,255,.25)">Default: admin123</p>
   </div>
 </div>
 
 <!-- Main App -->
 <div id="mainApp" class="app hidden">
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+
+  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <h2><i class="fas fa-shopping-bag"></i> Shalom Fashion</h2>
-      <p>Admin Panel</p>
+      <h2><i class="fas fa-shopping-bag"></i> Shalom</h2>
+      <p>Fashion Admin</p>
     </div>
-    <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
-      <span>📊</span> Dashboard
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><span>📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('products')" id="nav-products"><span>👗</span> Products</div>
+      <div class="nav-item" onclick="showPage('orders')" id="nav-orders"><span>📦</span> Orders</div>
+      <div class="nav-item" onclick="showPage('stock')" id="nav-stock"><span>📈</span> Stock History</div>
+      <div class="nav-item" onclick="showPage('showcase')" id="nav-showcase"><span>🖼️</span> Showcase</div>
     </div>
-    <div class="nav-item" onclick="showPage('products')" id="nav-products">
-      <span>👗</span> Products
-    </div>
-    <div class="nav-item" onclick="showPage('orders')" id="nav-orders">
-      <span>📦</span> Orders
-    </div>
-    <div class="nav-item" onclick="showPage('stock')" id="nav-stock">
-      <span>📈</span> Stock History
-    </div>
-    <div style="margin-top:auto;padding:20px">
-      <button class="btn btn-secondary btn-full" onclick="logout()">Logout</button>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-full" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </div>
 
+  <!-- Main Content -->
   <div class="main">
     <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰ Menu</button>
         <h1 id="pageTitle">Dashboard</h1>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <span style="font-size:12px;color:#7f8c8d">Logged in as Admin</span>
-        <a href="/" target="_blank" class="btn btn-secondary btn-sm">View Website</a>
+      <div class="topbar-right">
+        <span class="topbar-badge"><i class="fas fa-circle" style="color:#4ade80;font-size:.5rem"></i> Admin</span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> View Site</a>
       </div>
     </div>
+
     <div class="content">
 
       <!-- Dashboard -->
       <div id="page-dashboard">
         <div class="stats-grid">
-          <div class="stat-card"><div class="value" id="stat-products">0</div><div class="label">Total Products</div></div>
-          <div class="stat-card"><div class="value" id="stat-orders">0</div><div class="label">Total Orders</div></div>
-          <div class="stat-card"><div class="value" id="stat-revenue">₹0</div><div class="label">Total Revenue</div></div>
-          <div class="stat-card"><div class="value" id="stat-lowstock">0</div><div class="label">Low Stock Items</div></div>
+          <div class="stat-card"><div class="value" id="stat-products">0</div><div class="label">Products</div></div>
+          <div class="stat-card"><div class="value" id="stat-orders">0</div><div class="label">Orders</div></div>
+          <div class="stat-card"><div class="value" id="stat-revenue">₹0</div><div class="label">Revenue</div></div>
+          <div class="stat-card"><div class="value" id="stat-lowstock">0</div><div class="label">Low Stock</div></div>
         </div>
         <div class="card">
-          <h3>Recent Orders</h3>
+          <h3><i class="fas fa-receipt"></i> Recent Orders</h3>
           <div class="table-container">
             <table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead>
-            <tbody id="recentOrdersTable"><tr><td colspan="6" style="text-align:center;color:#999">Loading...</td></tr></tbody></table>
+            <tbody id="recentOrdersTable"><tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">Loading…</td></tr></tbody></table>
           </div>
         </div>
         <div class="card">
-          <h3>Low Stock Alert (≤5 units)</h3>
+          <h3><i class="fas fa-exclamation-triangle"></i> Low Stock Alert (≤5 units)</h3>
           <div class="table-container">
             <table><thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Action</th></tr></thead>
-            <tbody id="lowStockTable"><tr><td colspan="4" style="text-align:center;color:#999">Loading...</td></tr></tbody></table>
+            <tbody id="lowStockTable"><tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">Loading…</td></tr></tbody></table>
           </div>
         </div>
       </div>
 
       <!-- Products -->
       <div id="page-products" class="hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <h2 style="color:#fff">Products Management</h2>
-          <button class="btn btn-primary" onclick="openAddProduct()">+ Add Product</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+          <h2 style="font-size:1.1rem;font-weight:600;color:rgba(255,255,255,.9)">Products Management</h2>
+          <button class="btn btn-primary" onclick="openAddProduct()"><i class="fas fa-plus"></i> Add Product</button>
         </div>
         <div class="search-bar">
-          <input type="text" id="productSearch" placeholder="Search by name, SKU or barcode..." oninput="filterProducts()">
+          <input type="text" id="productSearch" placeholder="Search by name, SKU or barcode…" oninput="filterProducts()">
         </div>
         <div class="card" style="padding:0;overflow:hidden">
-          <div style="padding:20px 20px 0">
-            <h3 style="margin:0;padding-bottom:16px">Product List</h3>
-          </div>
-          <div class="table-container">
+          <div style="padding:1.25rem 1.5rem 0"><h3 style="border-bottom:none;margin-bottom:0"><i class="fas fa-boxes"></i> Product List</h3></div>
+          <div class="table-container" style="padding:0 0 .5rem">
             <table>
               <thead><tr><th>Name</th><th>SKU</th><th>Barcode</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
-              <tbody id="productsTable"><tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr></tbody>
+              <tbody id="productsTable"><tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -233,20 +380,16 @@ tr:hover td{background:#f8f9fa}
 
       <!-- Orders -->
       <div id="page-orders" class="hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <h2 style="color:#fff">All Orders</h2>
-          <button class="btn btn-success btn-sm" onclick="exportOrdersExcel()">
-            <i class="fas fa-file-excel"></i> Export to Excel
-          </button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+          <h2 style="font-size:1.1rem;font-weight:600;color:rgba(255,255,255,.9)">All Orders</h2>
+          <button class="btn btn-success btn-sm" onclick="exportOrdersExcel()"><i class="fas fa-file-excel"></i> Export Excel</button>
         </div>
         <div class="card" style="padding:0;overflow:hidden">
-          <div style="padding:20px 20px 0">
-            <h3 style="margin:0;padding-bottom:16px">All Orders</h3>
-          </div>
-          <div class="table-container">
+          <div style="padding:1.25rem 1.5rem 0"><h3 style="border-bottom:none;margin-bottom:0"><i class="fas fa-shopping-cart"></i> Order History</h3></div>
+          <div class="table-container" style="padding:0 0 .5rem">
             <table>
               <thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
-              <tbody id="ordersTable"><tr><td colspan="9" style="text-align:center;padding:20px;color:#999">Loading...</td></tr></tbody>
+              <tbody id="ordersTable"><tr><td colspan="9" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -254,23 +397,35 @@ tr:hover td{background:#f8f9fa}
 
       <!-- Stock History -->
       <div id="page-stock" class="hidden">
-        <h2 style="color:#fff;margin-bottom:16px">Stock History</h2>
+        <h2 style="font-size:1.1rem;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:1.25rem">Stock History</h2>
         <div class="card" style="padding:0;overflow:hidden">
-          <div style="padding:20px 20px 0">
-            <h3 style="margin:0;padding-bottom:16px">Stock Changes</h3>
-          </div>
-          <div class="table-container">
+          <div style="padding:1.25rem 1.5rem 0"><h3 style="border-bottom:none;margin-bottom:0"><i class="fas fa-history"></i> Stock Changes</h3></div>
+          <div class="table-container" style="padding:0 0 .5rem">
             <table>
               <thead><tr><th>Product</th><th>Old Stock</th><th>New Stock</th><th>Change</th><th>Reason</th><th>Time</th></tr></thead>
-              <tbody id="stockTable"><tr><td colspan="6" style="text-align:center;padding:20px;color:#999">Loading...</td></tr></tbody>
+              <tbody id="stockTable"><tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
 
-    </div>
-  </div>
-</div>
+      <!-- Showcase Categories -->
+      <div id="page-showcase" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+          <h2 style="font-size:1.1rem;font-weight:600;color:rgba(255,255,255,.9)">Fashion Showcase</h2>
+          <button class="btn btn-primary" onclick="openAddShowcase()"><i class="fas fa-plus"></i> Add Style Card</button>
+        </div>
+        <p style="color:rgba(255,255,255,.4);font-size:.82rem;margin-bottom:1.25rem">
+          These cards appear in the "Shop by Style" strip on the homepage. Each card has a name, optional subtitle, and a photo.
+        </p>
+        <div id="showcaseGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+          <div style="text-align:center;color:rgba(255,255,255,.3);padding:3rem;grid-column:1/-1">Loading…</div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
 
 <!-- Add/Edit Product Modal -->
 <div id="productModal" class="modal-overlay hidden">
@@ -289,7 +444,7 @@ tr:hover td{background:#f8f9fa}
         </select>
       </div>
     </div>
-    <div class="form-group"><label>Description</label><textarea id="pDescription" rows="2" placeholder="Product description..."></textarea></div>
+    <div class="form-group"><label>Description</label><textarea id="pDescription" rows="2" placeholder="Product description…"></textarea></div>
     <div class="form-row">
       <div class="form-group"><label>Price (₹) *</label><input type="number" id="pPrice" placeholder="5999" min="0"></div>
       <div class="form-group"><label>Stock Quantity *</label><input type="number" id="pStock" placeholder="10" min="0"></div>
@@ -297,17 +452,17 @@ tr:hover td{background:#f8f9fa}
     <div class="form-row">
       <div class="form-group"><label>SKU *</label><input type="text" id="pSKU" placeholder="SF-ANK-001"></div>
       <div class="form-group">
-        <label>Barcode * <span style="color:#666;font-size:11px">(EAN-13, UPC, Code128)</span></label>
-        <div style="display:flex;gap:8px">
+        <label>Barcode * <span style="color:rgba(255,255,255,.3);font-size:.72rem">(EAN-13 / UPC)</span></label>
+        <div style="display:flex;gap:.5rem">
           <input type="text" id="pBarcode" placeholder="8901234567890" style="flex:1">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="generateBarcode()" title="Auto-generate barcode">🔄 Generate</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="generateBarcode()" title="Auto-generate">🔄</button>
         </div>
       </div>
     </div>
-    <div id="barcodePreview" class="hidden" style="margin-bottom:16px;padding:12px;background:#f8f9fa;border-radius:8px;text-align:center">
-      <p style="font-size:12px;color:#666;margin-bottom:8px">Barcode Preview:</p>
-      <div id="barcodeImage" style="height:40px"></div>
-      <p id="barcodeText" style="font-size:11px;color:#aaa;margin-top:8px"></p>
+    <div id="barcodePreview" class="hidden" style="margin-bottom:1rem;padding:.85rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;text-align:center">
+      <p style="font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:.5rem">Barcode Preview:</p>
+      <div id="barcodeImage"></div>
+      <p id="barcodeText" style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.5rem"></p>
     </div>
     <div class="form-row">
       <div class="form-group"><label>Fabric</label><input type="text" id="pFabric" placeholder="Georgette"></div>
@@ -316,482 +471,695 @@ tr:hover td{background:#f8f9fa}
     <div class="form-group"><label>Sizes (comma separated)</label><input type="text" id="pSizes" placeholder="S, M, L, XL, XXL"></div>
     <div class="form-group">
       <label>Image Source</label>
-      <div style="display:flex;gap:10px;margin-bottom:10px">
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+      <div style="display:flex;gap:1rem;margin-bottom:.75rem">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;color:rgba(255,255,255,.65)">
           <input type="radio" name="imageSource" value="url" checked onchange="toggleImageSource()"> URL
         </label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;color:rgba(255,255,255,.65)">
           <input type="radio" name="imageSource" value="file" onchange="toggleImageSource()"> Upload File
         </label>
       </div>
       <div id="imageUrlInput">
-        <input type="text" id="pImage" placeholder="https://...">
+        <input type="text" id="pImage" placeholder="https://…">
       </div>
       <div id="imageFileInput" class="hidden">
-        <input type="file" id="pImageFile" accept="image/*" onchange="handleImageUpload()">
-        <p style="font-size:11px;color:#aaa;margin-top:4px">Max 5MB. Supported: JPG, PNG, GIF, WebP</p>
-        <div id="uploadProgress" class="hidden" style="margin-top:8px">
-          <div style="background:#0f3460;border-radius:4px;height:4px;overflow:hidden">
-            <div id="uploadBar" style="background:#27ae60;height:100%;width:0%;transition:width 0.3s"></div>
-          </div>
-          <p id="uploadStatus" style="font-size:11px;color:#aaa;margin-top:4px"></p>
+        <input type="file" id="pImageFile" accept="image/*" onchange="handleImageUpload()" style="color:rgba(255,255,255,.65)">
+        <p style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.4rem">Max 5MB · JPG, PNG, GIF, WebP</p>
+        <div id="uploadProgress" class="hidden" style="margin-top:.6rem">
+          <div class="progress-bar-wrap"><div class="progress-bar" id="uploadBar"></div></div>
+          <p id="uploadStatus" style="font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.3rem"></p>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+      <button class="btn btn-primary" onclick="saveProduct()"><i class="fas fa-save"></i> Save Product</button>
     </div>
   </div>
 </div>
 
-<!-- Quick Stock Update Modal -->
+<!-- Stock Update Modal -->
 <div id="stockModal" class="modal-overlay hidden">
-  <div class="modal" style="width:360px">
-    <h3>Update Stock</h3>
+  <div class="modal" style="max-width:380px">
+    <h3><i class="fas fa-boxes" style="color:#4ade80;margin-right:.5rem"></i>Update Stock</h3>
     <div id="stockAlert"></div>
     <input type="hidden" id="stockProductId">
-    <p id="stockProductName" style="color:#aaa;margin-bottom:16px;font-size:14px"></p>
+    <p id="stockProductName" style="color:rgba(255,255,255,.45);margin-bottom:1rem;font-size:.85rem"></p>
     <div class="form-group"><label>New Stock Quantity</label><input type="number" id="newStockQty" min="0" placeholder="Enter new stock"></div>
     <div class="form-group"><label>Reason</label>
       <select id="stockReason">
         <option value="restock">Restock</option>
         <option value="adjustment">Adjustment</option>
         <option value="return">Return</option>
-        <option value="damage">Damage/Loss</option>
+        <option value="damage">Damage / Loss</option>
       </select>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeStockModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="updateStock()">Update Stock</button>
+      <button class="btn btn-primary" onclick="updateStock()"><i class="fas fa-check"></i> Update</button>
     </div>
   </div>
 </div>
 
+<!-- Showcase Add/Edit Modal -->
+<div id="showcaseModal" class="modal-overlay hidden">
+  <div class="modal" style="max-width:500px">
+    <h3 id="showcaseModalTitle"><i class="fas fa-image" style="color:#4ade80;margin-right:.5rem"></i>Add Style Card</h3>
+    <div id="showcaseAlert"></div>
+    <input type="hidden" id="showcaseId">
+    <div class="form-group">
+      <label>Style Name * <span style="color:rgba(255,255,255,.3);font-size:.72rem">(shown below image)</span></label>
+      <input type="text" id="scName" placeholder="e.g. Ethnic Sarees">
+    </div>
+    <div class="form-group">
+      <label>Subtitle <span style="color:rgba(255,255,255,.3);font-size:.72rem">(optional small text)</span></label>
+      <input type="text" id="scSubtitle" placeholder="e.g. bridal wear, Contemporary/Fusion">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Main Category * <span style="color:rgba(255,255,255,.3);font-size:.72rem">(which tab to open)</span></label>
+        <select id="scCategory">
+          <option value="indian">Indian Wear</option>
+          <option value="western">Western Wear</option>
+          <option value="bridal">Bridal Wear</option>
+          <option value="accessories">Accessories</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Filter Keyword <span style="color:rgba(255,255,255,.3);font-size:.72rem">(filters products in that tab)</span></label>
+        <input type="text" id="scFilterTag" placeholder="e.g. saree, college, skirt, christian">
+        <p style="font-size:.7rem;color:rgba(255,255,255,.3);margin-top:.3rem">Leave empty to show all products in that category</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Display Order</label>
+        <input type="number" id="scOrder" placeholder="1" min="1">
+      </div>
+      <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:.5rem">
+        <label style="margin:0;cursor:pointer;display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:rgba(255,255,255,.65)">
+          <input type="checkbox" id="scActive" checked> Visible on website
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Image Source</label>
+      <div style="display:flex;gap:1rem;margin-bottom:.75rem">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;color:rgba(255,255,255,.65)">
+          <input type="radio" name="scImageSource" value="url" checked onchange="toggleScImageSource()"> URL
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;color:rgba(255,255,255,.65)">
+          <input type="radio" name="scImageSource" value="file" onchange="toggleScImageSource()"> Upload File
+        </label>
+      </div>
+      <div id="scImageUrlInput">
+        <input type="text" id="scImage" placeholder="https://…" oninput="updateScPreview(this.value)">
+      </div>
+      <div id="scImageFileInput" class="hidden">
+        <input type="file" id="scImageFile" accept="image/*" onchange="handleScImageUpload()" style="color:rgba(255,255,255,.65)">
+        <p style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.4rem">Max 5MB · JPG, PNG, WebP</p>
+        <div id="scUploadProgress" class="hidden" style="margin-top:.6rem">
+          <div class="progress-bar-wrap"><div class="progress-bar" id="scUploadBar"></div></div>
+          <p id="scUploadStatus" style="font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.3rem"></p>
+        </div>
+      </div>
+    </div>
+    <div id="scImagePreview" style="display:none;margin-bottom:1rem;border-radius:12px;overflow:hidden;height:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)">
+      <img id="scPreviewImg" src="" alt="Preview" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeShowcaseModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveShowcase()"><i class="fas fa-save"></i> Save Card</button>
+    </div>
+  </div>
+</div>
 
 <script>
 let adminToken = localStorage.getItem('adminToken') || '';
-let allProducts = [];
-let allOrders = [];
-let uploadedImageUrl = '';
+let allProducts = [], allOrders = [], uploadedImageUrl = '';
 
-// ── Image Upload Functions ───────────────────────────────────────────────────
+// ── Image Upload ──────────────────────────────────────────────────
 function toggleImageSource() {
-  const source = document.querySelector('input[name="imageSource"]:checked').value;
-  document.getElementById('imageUrlInput').classList.toggle('hidden', source === 'file');
-  document.getElementById('imageFileInput').classList.toggle('hidden', source === 'url');
-  
-  if (source === 'url') {
-    uploadedImageUrl = '';
-    document.getElementById('pImageFile').value = '';
-  } else {
-    document.getElementById('pImage').value = '';
-  }
+  const src = document.querySelector('input[name="imageSource"]:checked').value;
+  document.getElementById('imageUrlInput').classList.toggle('hidden', src === 'file');
+  document.getElementById('imageFileInput').classList.toggle('hidden', src === 'url');
+  if (src === 'url') { uploadedImageUrl = ''; document.getElementById('pImageFile').value = ''; }
+  else { document.getElementById('pImage').value = ''; }
 }
 
 async function handleImageUpload() {
-  const fileInput = document.getElementById('pImageFile');
-  const file = fileInput.files[0];
-  
+  const file = document.getElementById('pImageFile').files[0];
   if (!file) return;
-  
-  // Validate file size
-  if (file.size > 5 * 1024 * 1024) {
-    showAlert('productAlert', 'error', 'File size must be less than 5MB');
-    fileInput.value = '';
-    return;
-  }
-  
-  // Show progress
+  if (file.size > 5 * 1024 * 1024) { showAlert('productAlert','error','File must be < 5MB'); document.getElementById('pImageFile').value=''; return; }
   document.getElementById('uploadProgress').classList.remove('hidden');
   document.getElementById('uploadBar').style.width = '0%';
-  document.getElementById('uploadStatus').textContent = 'Uploading...';
-  
-  const formData = new FormData();
-  formData.append('image', file);
-  
+  document.getElementById('uploadStatus').textContent = 'Uploading…';
+  const fd = new FormData(); fd.append('image', file);
+  let prog = 0;
+  const t = setInterval(() => { prog = Math.min(prog + 12, 88); document.getElementById('uploadBar').style.width = prog + '%'; }, 100);
   try {
-    // Simulate progress
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-      progress += 10;
-      if (progress <= 90) {
-        document.getElementById('uploadBar').style.width = progress + '%';
-      }
-    }, 100);
-    
-    const response = await fetch('/api/admin/upload-image', {
-      method: 'POST',
-      headers: { 'x-admin-token': adminToken },
-      body: formData
-    });
-    
-    clearInterval(progressInterval);
-    
-    const data = await response.json();
-    
-    if (data.success) {
-      uploadedImageUrl = data.imageUrl;
+    const r = await fetch('/api/admin/upload-image', { method:'POST', headers:{'x-admin-token':adminToken}, body:fd });
+    clearInterval(t);
+    const d = await r.json();
+    if (d.success) {
+      uploadedImageUrl = d.imageUrl;
       document.getElementById('uploadBar').style.width = '100%';
       document.getElementById('uploadStatus').textContent = '✓ Upload complete!';
-      document.getElementById('uploadStatus').style.color = '#27ae60';
-      setTimeout(() => {
-        document.getElementById('uploadProgress').classList.add('hidden');
-      }, 2000);
-    } else {
-      throw new Error(data.error || 'Upload failed');
-    }
-  } catch (error) {
-    document.getElementById('uploadBar').style.width = '0%';
-    document.getElementById('uploadStatus').textContent = '✗ Upload failed: ' + error.message;
-    document.getElementById('uploadStatus').style.color = '#e74c3c';
-    uploadedImageUrl = '';
-    fileInput.value = '';
+      document.getElementById('uploadStatus').style.color = '#4ade80';
+      setTimeout(() => document.getElementById('uploadProgress').classList.add('hidden'), 2000);
+    } else throw new Error(d.error || 'Upload failed');
+  } catch(e) {
+    clearInterval(t);
+    document.getElementById('uploadStatus').textContent = '✗ ' + e.message;
+    document.getElementById('uploadStatus').style.color = '#f87171';
+    uploadedImageUrl = ''; document.getElementById('pImageFile').value='';
   }
 }
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
+// ── Auth ──────────────────────────────────────────────────────────
 async function login() {
   const pw = document.getElementById('loginPassword').value;
   try {
-    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password:pw}) });
+    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
     const d = await r.json();
     if (d.success) {
-      adminToken = d.token;
-      localStorage.setItem('adminToken', adminToken);
+      adminToken = d.token; localStorage.setItem('adminToken', adminToken);
       document.getElementById('loginScreen').classList.add('hidden');
       document.getElementById('mainApp').classList.remove('hidden');
       loadDashboard();
-    } else {
-      showAlert('loginAlert', 'error', d.error || 'Invalid password');
-    }
-  } catch { showAlert('loginAlert', 'error', 'Cannot connect to server'); }
+    } else showAlert('loginAlert','error', d.error || 'Invalid password');
+  } catch { showAlert('loginAlert','error','Cannot connect to server'); }
 }
-
 function logout() {
-  localStorage.removeItem('adminToken');
-  adminToken = '';
+  localStorage.removeItem('adminToken'); adminToken = '';
   document.getElementById('mainApp').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
 }
-
-// Auto-login if token exists
 if (adminToken) {
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('mainApp').classList.remove('hidden');
   loadDashboard();
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────────
+// ── Navigation ────────────────────────────────────────────────────
 function showPage(page) {
-  ['dashboard','products','orders','stock'].forEach(p => {
+  ['dashboard','products','orders','stock','showcase'].forEach(p => {
     document.getElementById('page-'+p).classList.add('hidden');
     document.getElementById('nav-'+p).classList.remove('active');
   });
   document.getElementById('page-'+page).classList.remove('hidden');
   document.getElementById('nav-'+page).classList.add('active');
-  const titles = {dashboard:'Dashboard',products:'Products Management',orders:'All Orders',stock:'Stock History'};
+  const titles = {dashboard:'Dashboard',products:'Products',orders:'Orders',stock:'Stock History',showcase:'Fashion Showcase'};
   document.getElementById('pageTitle').textContent = titles[page];
-  
-  // Close mobile menu after selection
-  if (window.innerWidth <= 768) {
-    toggleMobileMenu();
-  }
-  
+  if (window.innerWidth <= 768) toggleMobileMenu();
   if (page==='dashboard') loadDashboard();
   if (page==='products') loadProducts();
   if (page==='orders') loadOrders();
   if (page==='stock') loadStockHistory();
+  if (page==='showcase') loadShowcase();
 }
-
-// ── Mobile Menu Toggle ────────────────────────────────────────────────────────
 function toggleMobileMenu() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
+  document.getElementById('sidebar').classList.toggle('active');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
 }
 
-// ── API Helper ────────────────────────────────────────────────────────────────
+// ── API ────────────────────────────────────────────────────────────
 async function api(method, url, body) {
-  const opts = { method, headers: {'Content-Type':'application/json','x-admin-token':adminToken} };
+  const opts = { method, headers:{'Content-Type':'application/json','x-admin-token':adminToken} };
   if (body) opts.body = JSON.stringify(body);
-  const r = await fetch(url, opts);
-  return r.json();
+  const r = await fetch(url, opts); return r.json();
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────────
+// ── Dashboard ──────────────────────────────────────────────────────
 async function loadDashboard() {
   const [pd, od] = await Promise.all([api('GET','/api/admin/products'), api('GET','/api/admin/orders')]);
-  allProducts = pd.products || [];
-  allOrders = od.orders || [];
+  allProducts = pd.products || []; allOrders = od.orders || [];
   document.getElementById('stat-products').textContent = allProducts.length;
   document.getElementById('stat-orders').textContent = allOrders.length;
-  const revenue = allOrders.reduce((s,o) => s + (o.total||0), 0);
-  document.getElementById('stat-revenue').textContent = '₹' + revenue.toLocaleString('en-IN');
-  const lowStock = allProducts.filter(p => p.stock <= 5);
-  document.getElementById('stat-lowstock').textContent = lowStock.length;
+  const rev = allOrders.reduce((s,o)=>s+(o.total||0),0);
+  document.getElementById('stat-revenue').textContent = '₹'+rev.toLocaleString('en-IN');
+  const low = allProducts.filter(p=>p.stock<=5);
+  document.getElementById('stat-lowstock').textContent = low.length;
 
   const recent = allOrders.slice(0,10);
-  document.getElementById('recentOrdersTable').innerHTML = recent.length ? recent.map(o => `
+  document.getElementById('recentOrdersTable').innerHTML = recent.length ? recent.map(o=>`
     <tr>
-      <td><code style="color:#c0392b;font-weight:600">${o.order_id}</code></td>
+      <td><code style="color:#67e8f9;font-weight:600;font-size:.78rem">${o.order_id}</code></td>
       <td>${o.customer_name}</td>
-      <td>${Array.isArray(o.items) ? o.items.map(i=>i.name).join(', ') : '-'}</td>
-      <td><strong style="color:#27ae60">₹${(o.total||0).toLocaleString('en-IN')}</strong></td>
-      <td>${o.payment_method}</td>
-      <td>${o.order_date}</td>
-    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:#999">No orders yet</td></tr>';
+      <td style="font-size:.78rem;color:rgba(255,255,255,.55)">${Array.isArray(o.items)?o.items.map(i=>i.name).join(', '):'-'}</td>
+      <td><strong style="color:#4ade80">₹${(o.total||0).toLocaleString('en-IN')}</strong></td>
+      <td style="font-size:.78rem">${o.payment_method}</td>
+      <td style="font-size:.78rem;color:rgba(255,255,255,.4)">${o.order_date}</td>
+    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">No orders yet</td></tr>';
 
-  document.getElementById('lowStockTable').innerHTML = lowStock.length ? lowStock.map(p => `
+  document.getElementById('lowStockTable').innerHTML = low.length ? low.map(p=>`
     <tr>
       <td>${p.name}</td>
-      <td><code style="color:#7f8c8d">${p.sku}</code></td>
+      <td><code style="color:rgba(255,255,255,.45);font-size:.78rem">${p.sku}</code></td>
       <td><span class="badge ${p.stock===0?'badge-red':'badge-yellow'}">${p.stock} units</span></td>
-      <td><button class="btn btn-primary btn-sm" onclick="openStockModal(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.stock})">Update Stock</button></td>
-    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#27ae60">All products have sufficient stock ✓</td></tr>';
+      <td><button class="btn btn-primary btn-sm" onclick="openStockModal(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.stock})">Update</button></td>
+    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#4ade80;padding:1.5rem">✓ All products have sufficient stock</td></tr>';
 }
 
-// ── Barcode Generation ───────────────────────────────────────────────────────
+// ── Barcode ────────────────────────────────────────────────────────
 function generateBarcode() {
-  const barcode = document.getElementById('pBarcode').value.trim();
-  if (!barcode || barcode.length < 8 || barcode.length > 13) {
-    showAlert('productAlert', 'error', 'Barcode must be 8-13 digits');
-    return;
-  }
-  
-  // Validate numeric
-  if (!/^\d+$/.test(barcode)) {
-    showAlert('productAlert', 'error', 'Barcode must contain only digits');
-    return;
-  }
-  
-  // Show preview
+  const bc = document.getElementById('pBarcode').value.trim();
+  if (!bc || bc.length < 8 || bc.length > 13) { showAlert('productAlert','error','Barcode must be 8–13 digits'); return; }
+  if (!/^\d+$/.test(bc)) { showAlert('productAlert','error','Barcode must be numeric'); return; }
   document.getElementById('barcodePreview').classList.remove('hidden');
-  document.getElementById('barcodeText').textContent = barcode;
-  
-  // Generate barcode image (using online service for demo, will be generated server-side on save)
-  const barcodeImg = document.getElementById('barcodeImage');
-  barcodeImg.innerHTML = `<svg id="barcodeSvg"></svg>`;
-  
-  // Simple code128-like barcode display
-  barcodeImg.innerHTML = `<img src="https://barcode.tec-it.com/barcode.ashx?data=${barcode}&code=Code128&translate=no" style="height:40px" alt="Barcode">`;
+  document.getElementById('barcodeText').textContent = bc;
+  document.getElementById('barcodeImage').innerHTML = `<img src="https://barcode.tec-it.com/barcode.ashx?data=${bc}&code=Code128&translate=no" style="height:36px;filter:invert(1)" alt="Barcode">`;
 }
 
-// ── Auto-generate barcode from product name ────────────────────────────────────
-function autoGenerateBarcode() {
-  const name = document.getElementById('pName').value.trim();
-  const category = document.getElementById('pCategory').value;
-  const sku = document.getElementById('pSKU').value.trim();
-  
-  if (!sku) return;
-  
-  // Generate barcode format: CATEGORY(1) + SKU + random
-  const catCode = {'indian':'1','western':'2','bridal':'3','accessories':'4'}[category] || '0';
-  const randomPart = Math.floor(Math.random() * 1000000000);
-  const barcode = catCode + sku.replace(/[^0-9]/g,'').padEnd(6,'0').substring(0,6) + String(randomPart).padEnd(6,'0').substring(0,6);
-  
-  document.getElementById('pBarcode').value = barcode.substring(0, 13);
-}
+// ── Products ───────────────────────────────────────────────────────
 async function loadProducts() {
   const d = await api('GET','/api/admin/products');
-  allProducts = d.products || [];
-  renderProductsTable(allProducts);
+  allProducts = d.products || []; renderProductsTable(allProducts);
 }
-
 function renderProductsTable(products) {
-  document.getElementById('productsTable').innerHTML = products.length ? products.map(p => `
+  document.getElementById('productsTable').innerHTML = products.length ? products.map(p=>`
     <tr>
-      <td><strong>${p.name}</strong></td>
-      <td><code style="color:#7f8c8d">${p.sku}</code></td>
-      <td><code style="color:#7f8c8d">${p.barcode}</code></td>
+      <td><strong style="color:rgba(255,255,255,.9)">${p.name}</strong></td>
+      <td><code style="color:rgba(255,255,255,.45);font-size:.78rem">${p.sku}</code></td>
+      <td><code style="color:rgba(255,255,255,.35);font-size:.78rem">${p.barcode}</code></td>
       <td><span class="tag">${p.category}</span></td>
-      <td><strong style="color:#27ae60">₹${(p.price||0).toLocaleString('en-IN')}</strong></td>
+      <td><strong style="color:#4ade80">₹${(p.price||0).toLocaleString('en-IN')}</strong></td>
       <td><span class="badge ${p.stock<=5?'badge-red':p.stock<=15?'badge-yellow':'badge-green'}">${p.stock} units</span></td>
-      <td style="white-space:nowrap">
-        <button class="btn btn-secondary btn-sm" onclick="openEditProduct(${p.id})">Edit</button>
-        <button class="btn btn-primary btn-sm" onclick="openStockModal(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.stock})">Stock</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id},'${p.name.replace(/'/g,"\\'")}')">Delete</button>
+      <td style="white-space:nowrap;display:flex;gap:.4rem;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="openEditProduct(${p.id})"><i class="fas fa-pen"></i></button>
+        <button class="btn btn-primary btn-sm" onclick="openStockModal(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.stock})"><i class="fas fa-boxes"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id},'${p.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
       </td>
-    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">No products found. Add your first product!</td></tr>';
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">No products. Add your first one!</td></tr>';
 }
-
 function filterProducts() {
   const q = document.getElementById('productSearch').value.toLowerCase();
-  renderProductsTable(allProducts.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.barcode||'').includes(q)));
+  renderProductsTable(allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.sku.toLowerCase().includes(q)||(p.barcode||'').includes(q)));
 }
-
 function openAddProduct() {
   document.getElementById('productModalTitle').textContent = 'Add New Product';
   document.getElementById('productId').value = '';
-  ['pName','pDescription','pPrice','pStock','pSKU','pBarcode','pFabric','pOccasion','pSizes','pImage'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('pCategory').value = 'indian';
-  document.getElementById('productAlert').innerHTML = '';
-  document.getElementById('pImageFile').value = '';
-  uploadedImageUrl = '';
-  document.querySelector('input[name="imageSource"][value="url"]').checked = true;
-  toggleImageSource();
+  ['pName','pDescription','pPrice','pStock','pSKU','pBarcode','pFabric','pOccasion','pSizes','pImage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pCategory').value='indian'; document.getElementById('productAlert').innerHTML='';
+  document.getElementById('pImageFile').value=''; uploadedImageUrl='';
+  document.querySelector('input[name="imageSource"][value="url"]').checked=true; toggleImageSource();
   document.getElementById('productModal').classList.remove('hidden');
 }
-
 function openEditProduct(id) {
-  const p = allProducts.find(x => x.id === id);
-  if (!p) return;
-  document.getElementById('productModalTitle').textContent = 'Edit Product';
-  document.getElementById('productId').value = p.id;
-  document.getElementById('pName').value = p.name || '';
-  document.getElementById('pDescription').value = p.description || '';
-  document.getElementById('pPrice').value = p.price || '';
-  document.getElementById('pStock').value = p.stock || '';
-  document.getElementById('pSKU').value = p.sku || '';
-  document.getElementById('pBarcode').value = p.barcode || '';
-  document.getElementById('pFabric').value = p.fabric || '';
-  document.getElementById('pOccasion').value = p.occasion || '';
-  document.getElementById('pSizes').value = Array.isArray(p.sizes) ? p.sizes.join(', ') : (p.sizes || '');
-  document.getElementById('pImage').value = p.image || '';
-  document.getElementById('pCategory').value = p.category || 'indian';
-  document.getElementById('productAlert').innerHTML = '';
-  document.getElementById('pImageFile').value = '';
-  uploadedImageUrl = '';
-  document.querySelector('input[name="imageSource"][value="url"]').checked = true;
-  toggleImageSource();
+  const p = allProducts.find(x=>x.id===id); if(!p) return;
+  document.getElementById('productModalTitle').textContent='Edit Product';
+  document.getElementById('productId').value=p.id;
+  document.getElementById('pName').value=p.name||''; document.getElementById('pDescription').value=p.description||'';
+  document.getElementById('pPrice').value=p.price||''; document.getElementById('pStock').value=p.stock||'';
+  document.getElementById('pSKU').value=p.sku||''; document.getElementById('pBarcode').value=p.barcode||'';
+  document.getElementById('pFabric').value=p.fabric||''; document.getElementById('pOccasion').value=p.occasion||'';
+  document.getElementById('pSizes').value=Array.isArray(p.sizes)?p.sizes.join(', '):(p.sizes||'');
+  document.getElementById('pImage').value=p.image||''; document.getElementById('pCategory').value=p.category||'indian';
+  document.getElementById('productAlert').innerHTML=''; document.getElementById('pImageFile').value=''; uploadedImageUrl='';
+  document.querySelector('input[name="imageSource"][value="url"]').checked=true; toggleImageSource();
   document.getElementById('productModal').classList.remove('hidden');
 }
-
 function closeProductModal() { document.getElementById('productModal').classList.add('hidden'); }
-
 async function saveProduct() {
   const id = document.getElementById('productId').value;
-  const imageSource = document.querySelector('input[name="imageSource"]:checked').value;
-  
-  let imageUrl = '';
-  if (imageSource === 'url') {
-    imageUrl = document.getElementById('pImage').value.trim();
-  } else {
-    if (!uploadedImageUrl && !id) {
-      return showAlert('productAlert','error','Please upload an image or switch to URL mode');
-    }
-    imageUrl = uploadedImageUrl || document.getElementById('pImage').value.trim();
-  }
-  
+  const src = document.querySelector('input[name="imageSource"]:checked').value;
+  let img = src==='url' ? document.getElementById('pImage').value.trim() : (uploadedImageUrl || document.getElementById('pImage').value.trim());
+  if (!img && src==='file' && !id) return showAlert('productAlert','error','Upload an image or use URL');
   const data = {
-    name: document.getElementById('pName').value.trim(),
-    description: document.getElementById('pDescription').value.trim(),
-    category: document.getElementById('pCategory').value,
-    price: parseFloat(document.getElementById('pPrice').value) || 0,
-    stock: parseInt(document.getElementById('pStock').value) || 0,
-    sku: document.getElementById('pSKU').value.trim(),
-    barcode: document.getElementById('pBarcode').value.trim(),
-    fabric: document.getElementById('pFabric').value.trim(),
-    occasion: document.getElementById('pOccasion').value.trim(),
-    sizes: document.getElementById('pSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
-    image: imageUrl,
+    name:document.getElementById('pName').value.trim(), description:document.getElementById('pDescription').value.trim(),
+    category:document.getElementById('pCategory').value, price:parseFloat(document.getElementById('pPrice').value)||0,
+    stock:parseInt(document.getElementById('pStock').value)||0, sku:document.getElementById('pSKU').value.trim(),
+    barcode:document.getElementById('pBarcode').value.trim(), fabric:document.getElementById('pFabric').value.trim(),
+    occasion:document.getElementById('pOccasion').value.trim(),
+    sizes:document.getElementById('pSizes').value.split(',').map(s=>s.trim()).filter(Boolean), image:img
   };
-  if (!data.name || !data.sku || !data.barcode || !data.price) {
-    return showAlert('productAlert','error','Name, SKU, Barcode and Price are required');
-  }
-  const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
-  const method = id ? 'PUT' : 'POST';
-  const d = await api(method, url, data);
-  if (d.success) { closeProductModal(); loadProducts(); showToast(id ? 'Product updated!' : 'Product added!'); }
-  else showAlert('productAlert','error', d.error || 'Failed to save product');
+  if (!data.name||!data.sku||!data.barcode||!data.price) return showAlert('productAlert','error','Name, SKU, Barcode and Price are required');
+  const d = await api(id?'PUT':'POST', id?`/api/admin/products/${id}`:'/api/admin/products', data);
+  if (d.success) { closeProductModal(); loadProducts(); showToast(id?'Product updated!':'Product added!'); }
+  else showAlert('productAlert','error', d.error||'Failed to save');
 }
-
 async function deleteProduct(id, name) {
   if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
-  const d = await api('DELETE', `/api/admin/products/${id}`);
-  if (d.success) { loadProducts(); showToast('Product deleted'); }
-  else alert(d.error || 'Failed to delete');
+  const d = await api('DELETE',`/api/admin/products/${id}`);
+  if (d.success) { loadProducts(); showToast('Product deleted'); } else alert(d.error||'Failed');
 }
 
-// ── Stock Modal ───────────────────────────────────────────────────────────────
+// ── Stock Modal ────────────────────────────────────────────────────
 function openStockModal(id, name, current) {
-  document.getElementById('stockProductId').value = id;
-  document.getElementById('stockProductName').textContent = `${name} — Current stock: ${current} units`;
-  document.getElementById('newStockQty').value = current;
-  document.getElementById('stockAlert').innerHTML = '';
+  document.getElementById('stockProductId').value=id;
+  document.getElementById('stockProductName').textContent=`${name} — Current: ${current} units`;
+  document.getElementById('newStockQty').value=current; document.getElementById('stockAlert').innerHTML='';
   document.getElementById('stockModal').classList.remove('hidden');
 }
 function closeStockModal() { document.getElementById('stockModal').classList.add('hidden'); }
-
 async function updateStock() {
-  const id = document.getElementById('stockProductId').value;
-  const stock = parseInt(document.getElementById('newStockQty').value);
-  const reason = document.getElementById('stockReason').value;
-  if (isNaN(stock) || stock < 0) return showAlert('stockAlert','error','Enter a valid stock quantity');
-  const d = await api('PUT', `/api/admin/products/${id}/stock`, {stock, reason});
-  if (d.success) { closeStockModal(); loadProducts(); loadDashboard(); showToast('Stock updated!'); }
-  else showAlert('stockAlert','error', d.error || 'Failed to update stock');
+  const id=document.getElementById('stockProductId').value, stock=parseInt(document.getElementById('newStockQty').value), reason=document.getElementById('stockReason').value;
+  if(isNaN(stock)||stock<0) return showAlert('stockAlert','error','Enter valid quantity');
+  const d = await api('PUT',`/api/admin/products/${id}/stock`,{stock,reason});
+  if(d.success){closeStockModal();loadProducts();loadDashboard();showToast('Stock updated!');}
+  else showAlert('stockAlert','error',d.error||'Failed');
 }
 
-// ── Orders ────────────────────────────────────────────────────────────────────
+// ── Orders ─────────────────────────────────────────────────────────
 async function loadOrders() {
-  const d = await api('GET','/api/admin/orders');
-  allOrders = d.orders || [];
-  document.getElementById('ordersTable').innerHTML = allOrders.length ? allOrders.map(o => `
+  const d = await api('GET','/api/admin/orders'); allOrders = d.orders||[];
+  document.getElementById('ordersTable').innerHTML = allOrders.length ? allOrders.map(o=>`
     <tr>
-      <td><code style="color:#c0392b;font-weight:600">${o.order_id}</code></td>
+      <td><code style="color:#67e8f9;font-weight:600;font-size:.78rem">${o.order_id}</code></td>
       <td>${o.customer_name}</td>
-      <td style="font-size:12px">${o.email}</td>
-      <td>${o.phone}</td>
-      <td style="font-size:12px">${Array.isArray(o.items)?o.items.map(i=>`${i.name} x${i.quantity}`).join('<br>'):'—'}</td>
-      <td><strong style="color:#27ae60">₹${(o.total||0).toLocaleString('en-IN')}</strong></td>
-      <td>${o.payment_method}</td>
+      <td style="font-size:.75rem;color:rgba(255,255,255,.55)">${o.email}</td>
+      <td style="font-size:.78rem">${o.phone}</td>
+      <td style="font-size:.75rem;color:rgba(255,255,255,.55)">${Array.isArray(o.items)?o.items.map(i=>`${i.name} ×${i.quantity}`).join('<br>'):'—'}</td>
+      <td><strong style="color:#4ade80">₹${(o.total||0).toLocaleString('en-IN')}</strong></td>
+      <td style="font-size:.78rem">${o.payment_method}</td>
       <td><span class="badge ${o.payment_status==='Paid'?'badge-green':'badge-yellow'}">${o.payment_status}</span></td>
-      <td>${o.order_date}</td>
-    </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;padding:20px;color:#999">No orders yet</td></tr>';
+      <td style="font-size:.75rem;color:rgba(255,255,255,.4)">${o.order_date}</td>
+    </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">No orders yet</td></tr>';
 }
-
-// Export orders to Excel
 async function exportOrdersExcel() {
   try {
-    const response = await fetch('/api/admin/orders/export-excel', {
-      method: 'GET',
-      headers: { 'x-admin-token': adminToken }
-    });
-    
-    if (!response.ok) throw new Error('Export failed');
-    
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `orders-export-${new Date().toISOString().slice(0,10)}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-    showToast('Orders exported to Excel successfully!');
-  } catch (err) {
-    alert('Failed to export orders: ' + err.message);
+    const r = await fetch('/api/admin/orders/export-excel',{headers:{'x-admin-token':adminToken}});
+    if(!r.ok) throw new Error('Export failed');
+    const blob=await r.blob(); const url=window.URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=`orders-${new Date().toISOString().slice(0,10)}.xlsx`;
+    document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
+    showToast('Exported!');
+  } catch(e){ alert('Export failed: '+e.message); }
+}
+
+// ── Stock History ──────────────────────────────────────────────────
+async function loadStockHistory() {
+  const d = await fetch('/api/stock-history').then(r=>r.json());
+  const h = (d.history||[]).reverse();
+  document.getElementById('stockTable').innerHTML = h.length ? h.map(x=>`
+    <tr>
+      <td>${x.product_name}</td>
+      <td style="color:rgba(255,255,255,.5)">${x.old_stock}</td>
+      <td style="color:rgba(255,255,255,.5)">${x.new_stock}</td>
+      <td><span class="badge ${x.change<0?'badge-red':'badge-green'}">${x.change>0?'+':''}${x.change}</span></td>
+      <td><span class="tag">${x.reason}</span></td>
+      <td style="font-size:.75rem;color:rgba(255,255,255,.35)">${new Date(x.timestamp).toLocaleString('en-IN')}</td>
+    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem">No stock history yet</td></tr>';
+}
+
+// ── Helpers ────────────────────────────────────────────────────────
+function showAlert(id, type, msg) {
+  document.getElementById(id).innerHTML=`<div class="alert alert-${type==='error'?'error':'success'}">${msg}</div>`;
+}
+function showToast(msg) {
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;background:rgba(15,23,42,.93);border:1px solid rgba(74,222,128,.3);color:#4ade80;padding:.75rem 1.25rem;border-radius:14px;z-index:9999;font-size:.85rem;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.4);backdrop-filter:blur(16px);animation:fadeUp .3s ease';
+  t.textContent='✓ '+msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3000);
+}
+
+// ── Showcase Categories ───────────────────────────────────────────
+let scUploadedImageUrl = '';
+
+function updateScPreview(url) {
+  if (url) { document.getElementById('scPreviewImg').src=url; document.getElementById('scImagePreview').style.display='block'; }
+  else { document.getElementById('scImagePreview').style.display='none'; }
+}
+
+async function loadShowcase() {
+  const d = await api('GET', '/api/admin/showcase-categories');
+  const grid = document.getElementById('showcaseGrid');
+  const cats = d.categories || [];
+  if (!cats.length) {
+    grid.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.3);padding:3rem;grid-column:1/-1">No style cards yet.</div>';
+    return;
+  }
+  grid.innerHTML = cats.map(c => `
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,${c.active?'.12':'.05'});border-radius:18px;overflow:hidden;">
+      <div style="height:200px;overflow:hidden;background:rgba(255,255,255,.04)">
+        ${c.image?`<img src="${c.image}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.2);font-size:.8rem">No image</div>'}
+      </div>
+      <div style="padding:.85rem">
+        <div style="font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:${c.active?'rgba(255,255,255,.9)':'rgba(255,255,255,.35)'};">${c.name}</div>
+        ${c.subtitle?`<div style="font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.15rem;font-style:italic">${c.subtitle}</div>`:''}
+        <div style="font-size:.7rem;margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap">
+          <span style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.22);padding:.15rem .5rem;border-radius:6px;color:#4ade80">${c.category||'indian'}</span>
+          ${c.filterTag?`<span style="background:rgba(103,232,249,.10);border:1px solid rgba(103,232,249,.18);padding:.15rem .5rem;border-radius:6px;color:#67e8f9">#${c.filterTag}</span>`:'<span style="color:rgba(255,255,255,.25);font-style:italic;font-size:.68rem">all products</span>'}
+          <span style="margin-left:auto;color:${c.active?'#4ade80':'#f87171'}">${c.active?'Visible':'Hidden'}</span>
+        </div>
+        <div style="display:flex;gap:.4rem;margin-top:.75rem">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="openEditShowcase(${c.id})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteShowcase(${c.id},'${c.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddShowcase() {
+  document.getElementById('showcaseModalTitle').innerHTML='<i class="fas fa-plus" style="color:#4ade80;margin-right:.5rem"></i>Add Style Card';
+  document.getElementById('showcaseId').value='';
+  ['scName','scSubtitle','scFilterTag','scOrder','scImage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('scCategory').value='indian';
+  document.getElementById('scActive').checked=true;
+  document.getElementById('showcaseAlert').innerHTML='';
+  document.getElementById('scImagePreview').style.display='none';
+  document.getElementById('scImageFile').value='';
+  scUploadedImageUrl='';
+  document.querySelector('input[name="scImageSource"][value="url"]').checked=true;
+  toggleScImageSource();
+  document.getElementById('showcaseModal').classList.remove('hidden');
+}
+
+function openEditShowcase(id) {
+  api('GET','/api/admin/showcase-categories').then(d=>{
+    const c=(d.categories||[]).find(x=>x.id===id); if(!c) return;
+    document.getElementById('showcaseModalTitle').innerHTML='<i class="fas fa-pen" style="color:#4ade80;margin-right:.5rem"></i>Edit Style Card';
+    document.getElementById('showcaseId').value=c.id;
+    document.getElementById('scName').value=c.name||'';
+    document.getElementById('scSubtitle').value=c.subtitle||'';
+    document.getElementById('scCategory').value=c.category||'indian';
+    document.getElementById('scFilterTag').value=c.filterTag||'';
+    document.getElementById('scOrder').value=c.sort_order||'';
+    document.getElementById('scImage').value=c.image||'';
+    document.getElementById('scActive').checked=c.active!==false;
+    document.getElementById('showcaseAlert').innerHTML='';
+    document.getElementById('scImageFile').value=''; scUploadedImageUrl='';
+    document.querySelector('input[name="scImageSource"][value="url"]').checked=true;
+    toggleScImageSource();
+    updateScPreview(c.image||'');
+    document.getElementById('showcaseModal').classList.remove('hidden');
+  });
+}
+
+function closeShowcaseModal() { document.getElementById('showcaseModal').classList.add('hidden'); }
+
+function toggleScImageSource() {
+  const src=document.querySelector('input[name="scImageSource"]:checked').value;
+  document.getElementById('scImageUrlInput').classList.toggle('hidden',src==='file');
+  document.getElementById('scImageFileInput').classList.toggle('hidden',src==='url');
+  if(src==='url'){ scUploadedImageUrl=''; document.getElementById('scImageFile').value=''; }
+  else { document.getElementById('scImage').value=''; }
+}
+
+async function handleScImageUpload() {
+  const file=document.getElementById('scImageFile').files[0]; if(!file) return;
+  if(file.size>5*1024*1024){showAlert('showcaseAlert','error','File must be < 5MB');document.getElementById('scImageFile').value='';return;}
+  document.getElementById('scUploadProgress').classList.remove('hidden');
+  document.getElementById('scUploadBar').style.width='0%';
+  document.getElementById('scUploadStatus').textContent='Uploading…';
+  const fd=new FormData(); fd.append('image',file);
+  let prog=0; const t=setInterval(()=>{prog=Math.min(prog+12,88);document.getElementById('scUploadBar').style.width=prog+'%';},100);
+  try {
+    const r=await fetch('/api/admin/upload-image',{method:'POST',headers:{'x-admin-token':adminToken},body:fd});
+    clearInterval(t); const data=await r.json();
+    if(data.success){
+      scUploadedImageUrl=data.imageUrl;
+      document.getElementById('scUploadBar').style.width='100%';
+      document.getElementById('scUploadStatus').textContent='✓ Uploaded!';
+      document.getElementById('scUploadStatus').style.color='#4ade80';
+      updateScPreview(scUploadedImageUrl);
+      setTimeout(()=>document.getElementById('scUploadProgress').classList.add('hidden'),2000);
+    } else throw new Error(data.error||'Upload failed');
+  } catch(e){
+    clearInterval(t);
+    document.getElementById('scUploadStatus').textContent='✗ '+e.message;
+    document.getElementById('scUploadStatus').style.color='#f87171';
+    scUploadedImageUrl=''; document.getElementById('scImageFile').value='';
   }
 }
 
-// ── Stock History ─────────────────────────────────────────────────────────────
-async function loadStockHistory() {
-  const d = await fetch('/api/stock-history').then(r=>r.json());
-  const history = (d.history||[]).reverse();
-  document.getElementById('stockTable').innerHTML = history.length ? history.map(h => `
-    <tr>
-      <td>${h.product_name}</td>
-      <td>${h.old_stock}</td>
-      <td>${h.new_stock}</td>
-      <td><span class="badge ${h.change<0?'badge-red':'badge-green'}">${h.change>0?'+':''}${h.change}</span></td>
-      <td><span class="tag">${h.reason}</span></td>
-      <td style="font-size:12px;color:#7f8c8d">${new Date(h.timestamp).toLocaleString('en-IN')}</td>
-    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:#999">No stock history yet</td></tr>';
+async function saveShowcase() {
+  const id=document.getElementById('showcaseId').value;
+  const src=document.querySelector('input[name="scImageSource"]:checked').value;
+  const img=src==='url'?document.getElementById('scImage').value.trim():(scUploadedImageUrl||document.getElementById('scImage').value.trim());
+  const name=document.getElementById('scName').value.trim();
+  if(!name) return showAlert('showcaseAlert','error','Style name is required');
+  const payload={
+    name, subtitle:document.getElementById('scSubtitle').value.trim(),
+    category:document.getElementById('scCategory').value,
+    filterTag:document.getElementById('scFilterTag').value.trim().toLowerCase(),
+    image:img, sort_order:parseInt(document.getElementById('scOrder').value)||99,
+    active:document.getElementById('scActive').checked
+  };
+  const d=await api(id?'PUT':'POST',id?`/api/admin/showcase-categories/${id}`:'/api/admin/showcase-categories',payload);
+  if(d.success){closeShowcaseModal();loadShowcase();showToast(id?'Card updated!':'Card added!');}
+  else showAlert('showcaseAlert','error',d.error||'Failed to save');
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function showAlert(id, type, msg) {
-  document.getElementById(id).innerHTML = `<div class="alert alert-${type==='error'?'error':'success'}">${msg}</div>`;
+async function deleteShowcase(id,name) {
+  if(!confirm(`Delete "${name}"?`)) return;
+  const d=await api('DELETE',`/api/admin/showcase-categories/${id}`);
+  if(d.success){loadShowcase();showToast('Card deleted');}
+  else alert(d.error||'Failed to delete');
 }
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#27ae60;color:#fff;padding:12px 20px;border-radius:8px;z-index:9999;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,.3)';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+</script>
+</body>
+</html>
+
+async function loadShowcase() {
+  const d = await api('GET', '/api/admin/showcase-categories');
+  const grid = document.getElementById('showcaseGrid');
+  const cats = d.categories || [];
+  if (!cats.length) {
+    grid.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.3);padding:3rem;grid-column:1/-1">No style cards yet. Click "Add Style Card" to begin.</div>';
+    return;
+  }
+  grid.innerHTML = cats.map(c => `
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,${c.active?'.12':'.05'});border-radius:18px;overflow:hidden;transition:all .25s;">
+      <div style="height:200px;overflow:hidden;background:rgba(255,255,255,.04)">
+        ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'">` : '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.2);font-size:.8rem">No image</div>'}
+      </div>
+      <div style="padding:.85rem">
+        <div style="font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${c.active?'rgba(255,255,255,.9)':'rgba(255,255,255,.35)'};">${c.name}</div>
+        ${c.subtitle ? `<div style="font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.15rem;font-style:italic">${c.subtitle}</div>` : ''}
+        <div style="font-size:.7rem;color:rgba(255,255,255,.3);margin-top:.3rem">Order: ${c.sort_order} &nbsp;·&nbsp; ${c.active ? '<span style="color:#4ade80">Visible</span>' : '<span style="color:#f87171">Hidden</span>'}</div>
+        <div style="display:flex;gap:.4rem;margin-top:.75rem">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="openEditShowcase(${c.id})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteShowcase(${c.id},'${c.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddShowcase() {
+  document.getElementById('showcaseModalTitle').innerHTML = '<i class="fas fa-plus" style="color:#4ade80;margin-right:.5rem"></i>Add Style Card';
+  document.getElementById('showcaseId').value = '';
+  document.getElementById('scName').value = '';
+  document.getElementById('scSubtitle').value = '';
+  document.getElementById('scOrder').value = '';
+  document.getElementById('scImage').value = '';
+  document.getElementById('scActive').checked = true;
+  document.getElementById('showcaseAlert').innerHTML = '';
+  document.getElementById('scImagePreview').style.display = 'none';
+  document.getElementById('scImageFile').value = '';
+  scUploadedImageUrl = '';
+  document.querySelector('input[name="scImageSource"][value="url"]').checked = true;
+  toggleScImageSource();
+  document.getElementById('showcaseModal').classList.remove('hidden');
+}
+
+function openEditShowcase(id) {
+  api('GET', '/api/admin/showcase-categories').then(d => {
+    const c = (d.categories || []).find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('showcaseModalTitle').innerHTML = '<i class="fas fa-pen" style="color:#4ade80;margin-right:.5rem"></i>Edit Style Card';
+    document.getElementById('showcaseId').value = c.id;
+    document.getElementById('scName').value = c.name || '';
+    document.getElementById('scSubtitle').value = c.subtitle || '';
+    document.getElementById('scOrder').value = c.sort_order || '';
+    document.getElementById('scImage').value = c.image || '';
+    document.getElementById('scActive').checked = c.active !== false;
+    document.getElementById('showcaseAlert').innerHTML = '';
+    document.getElementById('scImageFile').value = '';
+    scUploadedImageUrl = '';
+    document.querySelector('input[name="scImageSource"][value="url"]').checked = true;
+    toggleScImageSource();
+    // Show preview
+    if (c.image) {
+      document.getElementById('scPreviewImg').src = c.image;
+      document.getElementById('scImagePreview').style.display = 'block';
+    } else {
+      document.getElementById('scImagePreview').style.display = 'none';
+    }
+    document.getElementById('showcaseModal').classList.remove('hidden');
+  });
+}
+
+function closeShowcaseModal() {
+  document.getElementById('showcaseModal').classList.add('hidden');
+}
+
+function toggleScImageSource() {
+  const src = document.querySelector('input[name="scImageSource"]:checked').value;
+  document.getElementById('scImageUrlInput').classList.toggle('hidden', src === 'file');
+  document.getElementById('scImageFileInput').classList.toggle('hidden', src === 'url');
+  if (src === 'url') {
+    scUploadedImageUrl = '';
+    document.getElementById('scImageFile').value = '';
+    // Update preview when URL changes
+    document.getElementById('scImage').addEventListener('input', function() {
+      if (this.value) {
+        document.getElementById('scPreviewImg').src = this.value;
+        document.getElementById('scImagePreview').style.display = 'block';
+      } else {
+        document.getElementById('scImagePreview').style.display = 'none';
+      }
+    });
+  } else {
+    document.getElementById('scImage').value = '';
+  }
+}
+
+async function handleScImageUpload() {
+  const file = document.getElementById('scImageFile').files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showAlert('showcaseAlert','error','File must be < 5MB'); document.getElementById('scImageFile').value=''; return; }
+  document.getElementById('scUploadProgress').classList.remove('hidden');
+  document.getElementById('scUploadBar').style.width = '0%';
+  document.getElementById('scUploadStatus').textContent = 'Uploading…';
+  const fd = new FormData(); fd.append('image', file);
+  let prog = 0;
+  const t = setInterval(() => { prog = Math.min(prog+12, 88); document.getElementById('scUploadBar').style.width = prog+'%'; }, 100);
+  try {
+    const r = await fetch('/api/admin/upload-image', { method:'POST', headers:{'x-admin-token':adminToken}, body:fd });
+    clearInterval(t);
+    const data = await r.json();
+    if (data.success) {
+      scUploadedImageUrl = data.imageUrl;
+      document.getElementById('scUploadBar').style.width = '100%';
+      document.getElementById('scUploadStatus').textContent = '✓ Uploaded!';
+      document.getElementById('scUploadStatus').style.color = '#4ade80';
+      document.getElementById('scPreviewImg').src = scUploadedImageUrl;
+      document.getElementById('scImagePreview').style.display = 'block';
+      setTimeout(() => document.getElementById('scUploadProgress').classList.add('hidden'), 2000);
+    } else throw new Error(data.error || 'Upload failed');
+  } catch(e) {
+    clearInterval(t);
+    document.getElementById('scUploadStatus').textContent = '✗ ' + e.message;
+    document.getElementById('scUploadStatus').style.color = '#f87171';
+    scUploadedImageUrl = ''; document.getElementById('scImageFile').value = '';
+  }
+}
+
+async function saveShowcase() {
+  const id = document.getElementById('showcaseId').value;
+  const src = document.querySelector('input[name="scImageSource"]:checked').value;
+  const img = src === 'url' ? document.getElementById('scImage').value.trim() : (scUploadedImageUrl || document.getElementById('scImage').value.trim());
+  const name = document.getElementById('scName').value.trim();
+  if (!name) return showAlert('showcaseAlert','error','Style name is required');
+  const payload = {
+    name,
+    subtitle: document.getElementById('scSubtitle').value.trim(),
+    image: img,
+    sort_order: parseInt(document.getElementById('scOrder').value) || 99,
+    active: document.getElementById('scActive').checked
+  };
+  const d = await api(id ? 'PUT' : 'POST', id ? `/api/admin/showcase-categories/${id}` : '/api/admin/showcase-categories', payload);
+  if (d.success) { closeShowcaseModal(); loadShowcase(); showToast(id ? 'Card updated!' : 'Card added!'); }
+  else showAlert('showcaseAlert','error', d.error || 'Failed to save');
+}
+
+async function deleteShowcase(id, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
+  const d = await api('DELETE', `/api/admin/showcase-categories/${id}`);
+  if (d.success) { loadShowcase(); showToast('Card deleted'); }
+  else alert(d.error || 'Failed to delete');
 }
 </script>
 </body>

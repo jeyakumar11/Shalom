@@ -228,6 +228,46 @@
       "payment_id": "pay_SzrYjgy1B8LjMW",
       "order_date": "10/06/2026",
       "created_at": "2026-06-10T08:30:07.906Z"
+    },
+    {
+      "id": 13,
+      "order_id": "SF-20260620-3067",
+      "customer_name": "Jai",
+      "email": "jaijs410@gmail.com",
+      "phone": "8122006902",
+      "address_street": "Tata consultancy services",
+      "address_city": "Cochin",
+      "address_state": "Kerala",
+      "address_pin": "682042",
+      "items": "[{\"id\":4,\"name\":\"White Christian Bridal Costume\",\"price\":100,\"image\":\"/uploads/product-1780938610745-963601953.png\",\"size\":\"S\",\"quantity\":1,\"maxStock\":109}]",
+      "subtotal": 100,
+      "gst": 18,
+      "total": 118,
+      "payment_method": "Razorpay Online Payment",
+      "payment_status": "Paid",
+      "payment_id": "pay_T3qvTV9z2NRyi4",
+      "order_date": "20/06/2026",
+      "created_at": "2026-06-20T10:29:05.319Z"
+    },
+    {
+      "id": 14,
+      "order_id": "SF-20260628-3413",
+      "customer_name": "Karthik Raja",
+      "email": "jaijs410@gmail.com",
+      "phone": "8122006902",
+      "address_street": "7/149 krishnrajapuram main road",
+      "address_city": "Tuticorin",
+      "address_state": "Tamil Nadu",
+      "address_pin": "628002",
+      "items": "[{\"id\":2,\"name\":\"Yellow Coat\",\"price\":1,\"image\":\"/uploads/product-1780938183097-643414909.jpeg\",\"size\":\"L\",\"quantity\":1,\"maxStock\":192}]",
+      "subtotal": 1,
+      "gst": 0.18,
+      "total": 1.18,
+      "payment_method": "Cash on Delivery",
+      "payment_status": "Pending",
+      "payment_id": null,
+      "order_date": "28/06/2026",
+      "created_at": "2026-06-28T17:00:41.772Z"
     }
   ]
 }

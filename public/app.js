@@ -11,84 +11,22 @@ let filteredProducts = {};
 
 // Make cart globally accessible for debugging
 window.cart = cart;
-// ===== THEME TOGGLE WITH BULB ANIMATION (FIXED & WORKING) =====
+// ===== THEME TOGGLE (Liquid Glass UI) =====
 function toggleTheme() {
     const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    console.log('Theme toggle clicked! Current:', currentTheme, 'New:', newTheme);
-    
-    // Get bulb elements
-    const bulbIcon = document.querySelector('.bulb-icon');
-    const bulbRope = document.querySelector('.bulb-rope');
-    const themeToggle = document.querySelector('.theme-toggle');
-    
-    if (bulbIcon) {
-        // Stop current animation
-        bulbIcon.style.animation = 'none';
-        
-        // Force reflow to restart animation
-        void bulbIcon.offsetWidth;
-        
-        // Trigger pull animation
-        bulbIcon.style.animation = 'pullBulb 0.5s ease';
-        
-        // Reset to gentle swing after pull
-        setTimeout(() => {
-            bulbIcon.style.animation = 'gentleSwing 3s ease-in-out infinite';
-        }, 500);
-    }
-    
-    // Animate rope pull
-    if (bulbRope) {
-        bulbRope.style.height = '35px';
-        setTimeout(() => {
-            bulbRope.style.height = '25px';
-        }, 200);
-    }
-    
-    // Toggle theme
-    html.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    console.log('Theme changed to:', newTheme);
-    
-    // Show notification
-    const emoji = newTheme === 'dark' ? '🌙' : '☀️';
-    const message = newTheme === 'dark' ? 'Dark mode enabled' : 'Light mode enabled';
-    showNotification(`${emoji} ${message}`, 'success');
+    const current = html.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    const emoji = next === 'dark' ? '🌙' : '☀️';
+    showNotification(`${emoji} ${next === 'dark' ? 'Dark' : 'Light'} mode`, 'info');
 }
-
-// Make toggleTheme globally accessible
 window.toggleTheme = toggleTheme;
+window.toggleThemeWithBulb = toggleTheme; // alias
 
-// Load saved theme on page load
 function loadSavedTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    const html = document.documentElement;
-    html.setAttribute('data-theme', savedTheme);
-    console.log('Loaded theme:', savedTheme);
-}function playClickSound() {
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 800;
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-    } catch (e) {
-        // Audio not supported, silently fail
-    }
+    const saved = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
 }
 
 // Flash screen effect when switching themes
@@ -124,28 +62,109 @@ flashStyle.textContent = `
 `;
 document.head.appendChild(flashStyle);
 
-// Load saved theme on page load
-function loadSavedTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    const html = document.documentElement;
-    html.setAttribute('data-theme', savedTheme);
-    
-    // Update icon
-    const themeToggle = document.querySelector('.theme-toggle i');
-    if (themeToggle) {
-        themeToggle.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    }
+function playClickSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (e) { /* Audio not supported */ }
 }
 
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', async () => {
-    loadSavedTheme(); // Load theme first
-    loadCartFromStorage(); // Load cart first
-    await fetchProducts();
+    loadSavedTheme();
+    loadCartFromStorage();
+    await Promise.all([fetchProducts(), loadShowcaseCategories()]);
     updateCartUI();
     setupEventListeners();
     setupMobileNavigation();
 });
+
+// ===== Showcase Categories =====
+async function loadShowcaseCategories() {
+    try {
+        const res = await fetch('/api/showcase-categories');
+        const data = await res.json();
+        const strip = document.getElementById('showcaseStrip');
+        if (!strip) return;
+        if (!data.success || !data.categories.length) {
+            strip.innerHTML = '<p class="showcase-empty">No styles added yet.</p>';
+            return;
+        }
+        strip.innerHTML = data.categories.map(cat => `
+            <div class="showcase-card"
+                 onclick="handleShowcaseClick('${(cat.category||'indian')}','${(cat.filterTag||'').replace(/'/g,"\\'")}','${cat.name.replace(/'/g,"\\'")}')">
+                <div class="showcase-card-img-wrap">
+                    <img src="${cat.image}" alt="${cat.name}" loading="lazy"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22266%22%3E%3Crect width=%22200%22 height=%22266%22 fill=%22%231f2937%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2212%22 fill=%22%236b7280%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo%20Image%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="showcase-card-name">${cat.name}</div>
+                ${cat.subtitle ? `<div class="showcase-card-sub">${cat.subtitle}</div>` : ''}
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error('Failed to load showcase categories:', err);
+    }
+}
+
+// Called when a showcase card is clicked
+// category = main tab (indian/western/bridal/accessories)
+// filterTag = keyword to sub-filter products by (empty = show all)
+// label = display name for notification
+function handleShowcaseClick(category, filterTag, label) {
+    // Switch to the right main category tab
+    showCategory(category);
+
+    // Apply sub-filter after products are rendered
+    setTimeout(() => {
+        if (filterTag && filterTag.trim() !== '') {
+            applyShowcaseFilter(category, filterTag.trim(), label);
+        }
+        // Scroll to the products section
+        const sec = document.getElementById(category);
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+}
+
+// Filter products in a category by a keyword tag
+function applyShowcaseFilter(category, tag, label) {
+    const productMap = {
+        indian: indianProducts,
+        western: westernProducts,
+        bridal: bridalProducts,
+        accessories: accessoriesProducts
+    };
+    const allInCat = productMap[category] || [];
+    const q = tag.toLowerCase();
+    const filtered = allInCat.filter(p =>
+        (p.name        && p.name.toLowerCase().includes(q)) ||
+        (p.occasion    && p.occasion.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        (p.fabric      && p.fabric.toLowerCase().includes(q)) ||
+        (p.category    && p.category.toLowerCase().includes(q))
+    );
+    filteredProducts[category] = filtered;
+    loadProducts(category);
+    showNotification(
+        filtered.length > 0
+            ? `${filtered.length} item${filtered.length > 1 ? 's' : ''} in "${label}"`
+            : `No items found in "${label}" — showing all`,
+        filtered.length > 0 ? 'success' : 'warning'
+    );
+    if (!filtered.length) {
+        // Fall back to showing everything
+        filteredProducts[category] = [...allInCat];
+        loadProducts(category);
+    }
+}
 
 // ===== Load Cart from Storage =====
 function loadCartFromStorage() {
@@ -328,6 +347,10 @@ function showCategory(category) {
     const targetSection = document.getElementById(category);
     if (targetSection) {
         targetSection.style.display = 'block';
+        // Scroll to the section smoothly
+        setTimeout(() => {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
     }
     
     currentCategory = category;
@@ -521,34 +544,36 @@ function showNotification(message, type = 'info') {
     const existing = document.querySelector('.notification');
     if (existing) existing.remove();
     
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
     
-    const colors = {
-        'success': '#27ae60',
-        'error': '#e74c3c',
-        'warning': '#f39c12',
-        'info': '#3498db'
+    const styles = {
+        success: { border: 'rgba(22,163,74,0.40)',  color: isDark ? '#4ade80' : '#15803d',  bg: isDark ? 'rgba(15,23,42,0.90)' : 'rgba(255,255,255,0.88)' },
+        error:   { border: 'rgba(220,38,38,0.40)',   color: isDark ? '#f87171' : '#dc2626',  bg: isDark ? 'rgba(15,23,42,0.90)' : 'rgba(255,255,255,0.88)' },
+        warning: { border: 'rgba(217,119,6,0.40)',   color: isDark ? '#fbbf24' : '#d97706',  bg: isDark ? 'rgba(15,23,42,0.90)' : 'rgba(255,255,255,0.88)' },
+        info:    { border: 'rgba(8,145,178,0.40)',    color: isDark ? '#67e8f9' : '#0891b2',  bg: isDark ? 'rgba(15,23,42,0.90)' : 'rgba(255,255,255,0.88)' }
     };
+    const s = styles[type] || styles.info;
     
     notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: ${colors[type] || colors.info};
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        z-index: 4000;
-        animation: slideIn 0.3s ease-out;
-        max-width: 300px;
-        font-weight: 500;
+        position: fixed; top: 88px; right: 18px;
+        background: ${s.bg};
+        color: ${s.color};
+        border: 1px solid ${s.border};
+        padding: 0.8rem 1.35rem;
+        border-radius: 14px;
+        box-shadow: 0 8px 28px rgba(0,0,0,${isDark ? '0.35' : '0.12'});
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        z-index: 5000; max-width: 290px;
+        font-weight: 500; font-size: 0.86rem;
+        animation: slideInRight 0.3s ease-out;
+        pointer-events: none;
     `;
     
     document.body.appendChild(notification);
-    
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease-out';
         setTimeout(() => notification.remove(), 300);
@@ -780,6 +805,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Navigate to section
             if (['indian', 'western', 'bridal', 'accessories'].includes(target)) {
                 showCategory(target);
+            } else if (target === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showCategory('indian');
             } else {
                 scrollToSection(target);
             }
@@ -801,6 +829,9 @@ function setupEventListeners() {
             
             if (['indian', 'western', 'bridal', 'accessories'].includes(target)) {
                 showCategory(target);
+            } else if (target === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showCategory('indian');
             } else {
                 scrollToSection(target);
             }
