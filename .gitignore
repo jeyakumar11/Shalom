@@ -61,3 +61,4 @@ desktop.ini
 # IMPORTANT: Never commit .env or credentials to Git!
 # Use Vercel Dashboard to set environment variables
 # ═══════════════════════════════════════════════════════════════
+.env*
