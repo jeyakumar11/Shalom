@@ -1,23 +1,26 @@
 // ═══════════════════════════════════════════════════════════════
-// Vercel Postgres Database - Products Module
-// Replaces: products-database.js (JSON-based)
+// Postgres Database - Products Module (using node-postgres)
+// Compatible with Supabase, Vercel Postgres, and any PostgreSQL
 // ═══════════════════════════════════════════════════════════════
 
-const { sql } = require('@vercel/postgres');
+const { Pool } = require('pg');
+
+// Create connection pool
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // ─── Initialize Products Database ──────────────────────────────
 async function initializeProductsDB() {
-  // Tables are created via SQL script (see: database-schema.sql)
-  console.log('📁 Using Vercel Postgres for products');
+  // Tables are created via SQL script (see: supabase-setup.sql)
+  console.log('📁 Using Postgres for products');
 }
 
 // ─── Get All Products ──────────────────────────────────────────
 async function getAllProducts() {
   try {
-    const result = await sql`
-      SELECT * FROM products 
-      ORDER BY created_at DESC
-    `;
+    const result = await pool.query('SELECT * FROM products ORDER BY created_at DESC');
     return result.rows;
   } catch (error) {
     console.error('❌ Error fetching products:', error);
@@ -28,11 +31,7 @@ async function getAllProducts() {
 // ─── Get Product By ID ─────────────────────────────────────────
 async function getProductById(id) {
   try {
-    const result = await sql`
-      SELECT * FROM products 
-      WHERE id = ${parseInt(id)}
-      LIMIT 1
-    `;
+    const result = await pool.query('SELECT * FROM products WHERE id = $1 LIMIT 1', [parseInt(id)]);
     return result.rows[0] || null;
   } catch (error) {
     console.error('❌ Error fetching product:', error);
@@ -43,11 +42,7 @@ async function getProductById(id) {
 // ─── Get Product By Barcode ────────────────────────────────────
 async function getProductByBarcode(barcode) {
   try {
-    const result = await sql`
-      SELECT * FROM products 
-      WHERE barcode = ${barcode}
-      LIMIT 1
-    `;
+    const result = await pool.query('SELECT * FROM products WHERE barcode = $1 LIMIT 1', [barcode]);
     return result.rows[0] || null;
   } catch (error) {
     console.error('❌ Error fetching product by barcode:', error);
@@ -58,11 +53,7 @@ async function getProductByBarcode(barcode) {
 // ─── Get Product By SKU ────────────────────────────────────────
 async function getProductBySKU(sku) {
   try {
-    const result = await sql`
-      SELECT * FROM products 
-      WHERE sku = ${sku}
-      LIMIT 1
-    `;
+    const result = await pool.query('SELECT * FROM products WHERE sku = $1 LIMIT 1', [sku]);
     return result.rows[0] || null;
   } catch (error) {
     console.error('❌ Error fetching product by SKU:', error);
@@ -73,26 +64,27 @@ async function getProductBySKU(sku) {
 // ─── Add Product ───────────────────────────────────────────────
 async function addProduct(productData) {
   try {
-    const result = await sql`
-      INSERT INTO products (
+    const result = await pool.query(
+      `INSERT INTO products (
         name, category, price, stock, image, 
         sku, barcode, sizes, description, 
         fabric, occasion
-      ) VALUES (
-        ${productData.name},
-        ${productData.category},
-        ${productData.price},
-        ${productData.stock || 0},
-        ${productData.image || null},
-        ${productData.sku},
-        ${productData.barcode || null},
-        ${JSON.stringify(productData.sizes || [])}::jsonb,
-        ${productData.description || null},
-        ${productData.fabric || null},
-        ${productData.occasion || null}
-      )
-      RETURNING *
-    `;
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING *`,
+      [
+        productData.name,
+        productData.category,
+        productData.price,
+        productData.stock || 0,
+        productData.image || null,
+        productData.sku,
+        productData.barcode || null,
+        JSON.stringify(productData.sizes || []),
+        productData.description || null,
+        productData.fabric || null,
+        productData.occasion || null
+      ]
+    );
     
     console.log(`✅ Product added: ${productData.name}`);
     return result.rows[0];
@@ -105,24 +97,28 @@ async function addProduct(productData) {
 // ─── Update Product ────────────────────────────────────────────
 async function updateProduct(productId, productData) {
   try {
-    const result = await sql`
-      UPDATE products 
-      SET 
-        name = ${productData.name},
-        category = ${productData.category},
-        price = ${productData.price},
-        stock = ${productData.stock},
-        image = ${productData.image || null},
-        sku = ${productData.sku},
-        barcode = ${productData.barcode || null},
-        sizes = ${JSON.stringify(productData.sizes || [])}::jsonb,
-        description = ${productData.description || null},
-        fabric = ${productData.fabric || null},
-        occasion = ${productData.occasion || null},
-        updated_at = NOW()
-      WHERE id = ${parseInt(productId)}
-      RETURNING *
-    `;
+    const result = await pool.query(
+      `UPDATE products 
+      SET name = $1, category = $2, price = $3, stock = $4, image = $5,
+          sku = $6, barcode = $7, sizes = $8, description = $9,
+          fabric = $10, occasion = $11, updated_at = NOW()
+      WHERE id = $12
+      RETURNING *`,
+      [
+        productData.name,
+        productData.category,
+        productData.price,
+        productData.stock,
+        productData.image || null,
+        productData.sku,
+        productData.barcode || null,
+        JSON.stringify(productData.sizes || []),
+        productData.description || null,
+        productData.fabric || null,
+        productData.occasion || null,
+        parseInt(productId)
+      ]
+    );
     
     if (result.rows.length === 0) {
       throw new Error('Product not found');
@@ -138,49 +134,50 @@ async function updateProduct(productId, productData) {
 
 // ─── Update Product Stock ──────────────────────────────────────
 async function updateProductStock(productId, newStock, reason = 'manual_update') {
+  const client = await pool.connect();
   try {
-    // Get current stock first
-    const product = await getProductById(productId);
+    await client.query('BEGIN');
+    
+    // Get current stock
+    const productResult = await client.query('SELECT * FROM products WHERE id = $1', [parseInt(productId)]);
+    const product = productResult.rows[0];
     if (!product) throw new Error('Product not found');
     
     const oldStock = product.stock;
     
     // Update stock
-    const result = await sql`
-      UPDATE products 
-      SET stock = ${parseInt(newStock)},
-          updated_at = NOW()
-      WHERE id = ${parseInt(productId)}
-      RETURNING *
-    `;
+    const updateResult = await client.query(
+      'UPDATE products SET stock = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+      [parseInt(newStock), parseInt(productId)]
+    );
     
     // Add to stock history
-    await sql`
-      INSERT INTO stock_history (
-        product_id, product_name, old_stock, new_stock, 
-        change_amount, change_reason
-      ) VALUES (
-        ${parseInt(productId)},
-        ${product.name},
-        ${oldStock},
-        ${parseInt(newStock)},
-        ${parseInt(newStock) - oldStock},
-        ${reason}
-      )
-    `;
+    await client.query(
+      `INSERT INTO stock_history (product_id, product_name, old_stock, new_stock, change_amount, change_reason)
+      VALUES ($1, $2, $3, $4, $5, $6)`,
+      [parseInt(productId), product.name, oldStock, parseInt(newStock), parseInt(newStock) - oldStock, reason]
+    );
     
+    await client.query('COMMIT');
     console.log(`✅ Stock updated for ${product.name}: ${oldStock} → ${newStock}`);
-    return result.rows[0];
+    return updateResult.rows[0];
   } catch (error) {
+    await client.query('ROLLBACK');
     console.error('❌ Error updating stock:', error);
     throw error;
+  } finally {
+    client.release();
   }
 }
 
 // ─── Reduce Stock (for orders) ─────────────────────────────────
 async function reduceStock(productId, quantity, orderId = null) {
+  const client = await pool.connect();
   try {
-    const product = await getProductById(productId);
+    await client.query('BEGIN');
+    
+    const productResult = await client.query('SELECT * FROM products WHERE id = $1', [parseInt(productId)]);
+    const product = productResult.rows[0];
     if (!product) throw new Error('Product not found');
     
     if (product.stock < quantity) {
@@ -191,45 +188,34 @@ async function reduceStock(productId, quantity, orderId = null) {
     const newStock = oldStock - quantity;
     
     // Reduce stock
-    const result = await sql`
-      UPDATE products 
-      SET stock = ${newStock},
-          updated_at = NOW()
-      WHERE id = ${parseInt(productId)}
-      RETURNING *
-    `;
+    const result = await client.query(
+      'UPDATE products SET stock = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+      [newStock, parseInt(productId)]
+    );
     
     // Add to stock history
-    await sql`
-      INSERT INTO stock_history (
-        product_id, product_name, old_stock, new_stock, 
-        change_amount, change_reason, order_id
-      ) VALUES (
-        ${parseInt(productId)},
-        ${product.name},
-        ${oldStock},
-        ${newStock},
-        ${-quantity},
-        ${orderId ? `order_${orderId}` : 'sale'},
-        ${orderId}
-      )
-    `;
+    await client.query(
+      `INSERT INTO stock_history (product_id, product_name, old_stock, new_stock, change_amount, change_reason, order_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [parseInt(productId), product.name, oldStock, newStock, -quantity, orderId ? `order_${orderId}` : 'sale', orderId]
+    );
     
+    await client.query('COMMIT');
     console.log(`✅ Stock reduced for ${product.name}: ${oldStock} → ${newStock} (Order: ${orderId})`);
     return result.rows[0];
   } catch (error) {
+    await client.query('ROLLBACK');
     console.error('❌ Error reducing stock:', error);
     throw error;
+  } finally {
+    client.release();
   }
 }
 
 // ─── Delete Product ────────────────────────────────────────────
 async function deleteProduct(productId) {
   try {
-    await sql`
-      DELETE FROM products 
-      WHERE id = ${parseInt(productId)}
-    `;
+    await pool.query('DELETE FROM products WHERE id = $1', [parseInt(productId)]);
     console.log(`✅ Product deleted: ID ${productId}`);
     return true;
   } catch (error) {
@@ -242,18 +228,15 @@ async function deleteProduct(productId) {
 async function getStockHistory(productId = null) {
   try {
     if (productId) {
-      const result = await sql`
-        SELECT * FROM stock_history 
-        WHERE product_id = ${parseInt(productId)}
-        ORDER BY created_at DESC
-      `;
+      const result = await pool.query(
+        'SELECT * FROM stock_history WHERE product_id = $1 ORDER BY created_at DESC',
+        [parseInt(productId)]
+      );
       return result.rows;
     } else {
-      const result = await sql`
-        SELECT * FROM stock_history 
-        ORDER BY created_at DESC
-        LIMIT 100
-      `;
+      const result = await pool.query(
+        'SELECT * FROM stock_history ORDER BY created_at DESC LIMIT 100'
+      );
       return result.rows;
     }
   } catch (error) {
@@ -265,7 +248,7 @@ async function getStockHistory(productId = null) {
 // ─── Clear All Products (Admin) ────────────────────────────────
 async function clearAllProducts() {
   try {
-    await sql`DELETE FROM products`;
+    await pool.query('DELETE FROM products');
     console.log('🗑️ All products cleared by admin');
     return true;
   } catch (error) {
@@ -277,17 +260,13 @@ async function clearAllProducts() {
 // ─── Get Database Statistics ───────────────────────────────────
 async function getDatabaseStats() {
   try {
-    const totalProducts = await sql`SELECT COUNT(*) as count FROM products`;
-    const totalStock = await sql`SELECT SUM(stock) as total FROM products`;
-    const totalValue = await sql`SELECT SUM(price * stock) as value FROM products`;
-    const categoryCounts = await sql`
-      SELECT category, COUNT(*) as count 
-      FROM products 
-      GROUP BY category
-    `;
-    const lastUpdated = await sql`
-      SELECT MAX(updated_at) as last_update FROM products
-    `;
+    const totalProducts = await pool.query('SELECT COUNT(*) as count FROM products');
+    const totalStock = await pool.query('SELECT SUM(stock) as total FROM products');
+    const totalValue = await pool.query('SELECT SUM(price * stock) as value FROM products');
+    const categoryCounts = await pool.query(
+      'SELECT category, COUNT(*) as count FROM products GROUP BY category'
+    );
+    const lastUpdated = await pool.query('SELECT MAX(updated_at) as last_update FROM products');
     
     const categoryMap = {};
     categoryCounts.rows.forEach(row => {
