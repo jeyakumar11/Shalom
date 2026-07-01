@@ -13,7 +13,7 @@
     "sizes": [
       "Free Size"
     ],
-    "image": "https://loremflickr.com/800/1000/saree",
+    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -34,7 +34,7 @@
       "L",
       "XL"
     ],
-    "image": "https://loremflickr.com/800/1000/lehenga",
+    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -55,7 +55,7 @@
       "XL",
       "Custom"
     ],
-    "image": "https://loremflickr.com/800/1000/weddinggown",
+    "image": "https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -76,7 +76,7 @@
       "M",
       "L"
     ],
-    "image": "https://loremflickr.com/800/1000/maxidress",
+    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -96,7 +96,7 @@
       "M",
       "L"
     ],
-    "image": "https://loremflickr.com/800/1000/cocktaildress",
+    "image": "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -114,7 +114,7 @@
     "sizes": [
       "Free Size"
     ],
-    "image": "https://loremflickr.com/800/1000/silksaree",
+    "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -132,7 +132,7 @@
     "sizes": [
       "Free Size"
     ],
-    "image": "https://loremflickr.com/800/1000/jhumka",
+    "image": "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -150,7 +150,7 @@
     "sizes": [
       "Free Size"
     ],
-    "image": "https://loremflickr.com/800/1000/bridalhair",
+    "image": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -171,7 +171,7 @@
       "32",
       "34"
     ],
-    "image": "https://loremflickr.com/800/1000/trousers",
+    "image": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
   },
@@ -189,8 +189,108 @@
     "sizes": [
       "Standard"
     ],
-    "image": "https://loremflickr.com/800/1000/clutchbag",
+    "image": "https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&w=800&q=80",
     "created_at": "2026-07-01T18:19:03.000Z",
     "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 11,
+    "name": "Oversized Denim Jacket",
+    "description": "A classic light-wash oversized denim jacket with drop shoulders and premium silver button hardware.",
+    "category": "western",
+    "price": 2199,
+    "stock": 35,
+    "sku": "WES-JKT-004",
+    "barcode": "8901234567011",
+    "fabric": "100% Cotton Denim",
+    "occasion": "Casual, Outing",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "image": "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=800&q=80",
+    "created_at": "2026-07-01T18:25:00.000Z",
+    "updated_at": "2026-07-01T18:25:00.000Z"
+  },
+  {
+    "id": 12,
+    "name": "Velvet Royal Anarkali Suit",
+    "description": "A heavy floor-length deep navy velvet Anarkali suit with golden zari work around the neckline and cuffs.",
+    "category": "indian",
+    "price": 4800,
+    "stock": 12,
+    "sku": "IND-ANA-003",
+    "barcode": "8901234567012",
+    "fabric": "Micro Velvet",
+    "occasion": "Festive, Party, Wedding",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "image": "https://images.unsplash.com/photo-1610030470298-bc4a671cfd07?auto=format&fit=crop&w=800&q=80",
+    "created_at": "2026-07-01T18:25:00.000Z",
+    "updated_at": "2026-07-01T18:25:00.000Z"
+  },
+  {
+    "id": 13,
+    "name": "Off-Shoulder Mermaid Wedding Dress",
+    "description": "Sleek satin mermaid silhouette bridal gown featuring an off-shoulder structure and an elegant button-down back closure.",
+    "category": "bridal",
+    "price": 21000,
+    "stock": 4,
+    "sku": "BRD-MER-003",
+    "barcode": "8901234567013",
+    "fabric": "Premium Duchesse Satin",
+    "occasion": "Wedding",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "image": "https://images.unsplash.com/photo-1546193430-c2d20e1cd9ef?auto=format&fit=crop&w=800&q=80",
+    "created_at": "2026-07-01T18:25:00.000Z",
+    "updated_at": "2026-07-01T18:25:00.000Z"
+  },
+  {
+    "id": 14,
+    "name": "Layered Layer Zircon Necklace Set",
+    "description": "A brilliant white rhodium-plated sterling silver necklace set featuring AAA grade cubic zirconia gemstones.",
+    "category": "accessories",
+    "price": 3200,
+    "stock": 15,
+    "sku": "ACC-NEC-004",
+    "barcode": "8901234567014",
+    "fabric": "Sterling Silver, Zircon",
+    "occasion": "Wedding, Party",
+    "sizes": [
+      "Adjustable"
+    ],
+    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80",
+    "created_at": "2026-07-01T18:25:00.000Z",
+    "updated_at": "2026-07-01T18:25:00.000Z"
+  },
+  {
+    "id": 15,
+    "name": "Satin Silk Wrap Blouse",
+    "description": "A champagne-colored satin wrap top with a deep V-neck and stylish balloon sleeves.",
+    "category": "western",
+    "price": 1499,
+    "stock": 28,
+    "sku": "WES-BLU-005",
+    "barcode": "8901234567015",
+    "fabric": "Satin Silk",
+    "occasion": "Casual, Party",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L"
+    ],
+    "image": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80",
+    "created_at": "2026-07-01T18:25:00.000Z",
+    "updated_at": "2026-07-01T18:25:00.000Z"
   }
 ]
