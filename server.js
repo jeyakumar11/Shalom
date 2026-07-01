@@ -13,10 +13,11 @@ const fs = require('fs');
 const Razorpay = require('razorpay');
 require('dotenv').config();
 
-// ═══ CLOUD STORAGE (Vercel Postgres + Cloudinary) ═══
-const { insertOrder, getAllOrders } = require('./database-postgres');
-const productsDB = require('./products-database-postgres');
-const showcaseDB = require('./showcase-database-postgres');
+// ═══ HYBRID DATABASE (Auto-switches: Postgres → JSON fallback) ═══
+// ✅ Uses Postgres when available, automatically falls back to local JSON
+const { insertOrder, getAllOrders, getDatabaseStatus } = require('./database-hybrid');
+const productsDB = require('./products-database-hybrid');
+const showcaseDB = require('./showcase-database-hybrid');
 const { upload } = require('./cloudinary-config');
 
 const app = express();
@@ -214,8 +215,11 @@ function adminAuth(req, res, next) {
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 // Debug endpoint to check environment variables (REMOVE AFTER TESTING)
-app.get('/api/debug/env', (req, res) => {
+app.get('/api/debug/env', async (req, res) => {
+  const dbStatus = await getDatabaseStatus();
+  
   res.json({
+    database: dbStatus,
     hasPostgresUrl: !!process.env.POSTGRES_URL,
     hasCloudinaryName: !!process.env.CLOUDINARY_CLOUD_NAME,
     hasCloudinaryKey: !!process.env.CLOUDINARY_API_KEY,
