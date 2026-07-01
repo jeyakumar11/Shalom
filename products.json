@@ -1,56 +1,196 @@
 [
   {
     "id": 1,
-    "name": "sasd",
-    "description": "ijug",
+    "name": "Elegant Red Satin Saree",
+    "description": "A beautiful and lightweight red satin saree with a smooth finish, perfect for evening parties and festive occasions.",
     "category": "indian",
-    "price": 23,
-    "stock": 23,
-    "sku": "EAR-RED-001",
-    "barcode": "1234567897456",
+    "price": 2499,
+    "stock": 45,
+    "sku": "IND-SAR-001",
+    "barcode": "8901234567001",
     "fabric": "Satin",
-    "occasion": "Casual, Party, Festive, Wedding",
+    "occasion": "Party, Festive, Wedding",
     "sizes": [
       "Free Size"
     ],
-    "image": "https://res.cloudinary.com/djn3eb2ht/image/upload/v1782879165/shalom-fashion/products/product-1782879162407-677727411.jpg",
-    "created_at": "2026-07-01T04:12:47.107Z",
-    "updated_at": "2026-07-01T04:12:47.107Z"
+    "image": "https://loremflickr.com/800/1000/saree",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
   },
   {
     "id": 2,
-    "name": "sasd",
-    "description": "frasdfa",
+    "name": "Designer Embroidered Lehenga",
+    "description": "Intricately embroidered lehenga choli with a matching dupatta. Features traditional motifs with a modern silhouette.",
     "category": "indian",
-    "price": 23,
-    "stock": 23,
-    "sku": "EAR-RED-001",
-    "barcode": "1234567897456",
-    "fabric": "Satin",
-    "occasion": "Casual, Party, Festive, Wedding",
+    "price": 5999,
+    "stock": 15,
+    "sku": "IND-LEH-002",
+    "barcode": "8901234567002",
+    "fabric": "Georgette, Net",
+    "occasion": "Festive, Wedding",
     "sizes": [
-      "Free Size"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
-    "image": "https://res.cloudinary.com/djn3eb2ht/image/upload/v1782897722/shalom-fashion/products/product-1782897717869-320251735.jpg",
-    "created_at": "2026-07-01T09:22:02.073Z",
-    "updated_at": "2026-07-01T09:22:02.073Z"
+    "image": "https://loremflickr.com/800/1000/lehenga",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
   },
   {
     "id": 3,
-    "name": "bridal christ",
-    "description": "bridal",
-    "category": "indian",
-    "price": 23,
-    "stock": 23,
-    "sku": "EAR-RED-001",
-    "barcode": "1234567897456",
-    "fabric": "Satin",
-    "occasion": "Casual, Party, Festive, Wedding",
+    "name": "Classic Christian Bridal Gown",
+    "description": "A stunning white A-line bridal gown featuring delicate lace floral appliqués, a sweetheart neckline, and a sweeping train.",
+    "category": "bridal",
+    "price": 18500,
+    "stock": 5,
+    "sku": "BRD-GWN-001",
+    "barcode": "8901234567003",
+    "fabric": "Lace, Tulle, Satin",
+    "occasion": "Wedding",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "Custom"
+    ],
+    "image": "https://loremflickr.com/800/1000/weddinggown",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 4,
+    "name": "Floral Chiffon Maxi Dress",
+    "description": "Breezy and comfortable floral maxi dress with a V-neckline and a high slit. Perfect for summer outings and brunches.",
+    "category": "western",
+    "price": 1899,
+    "stock": 30,
+    "sku": "WES-MAX-001",
+    "barcode": "8901234567004",
+    "fabric": "Chiffon",
+    "occasion": "Casual, Vacation",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L"
+    ],
+    "image": "https://loremflickr.com/800/1000/maxidress",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 5,
+    "name": "Chic Evening Cocktail Dress",
+    "description": "A sleek, form-fitting black cocktail dress featuring a square neckline and a midi-length hem.",
+    "category": "western",
+    "price": 2799,
+    "stock": 22,
+    "sku": "WES-CKT-002",
+    "barcode": "8901234567005",
+    "fabric": "Polyester Blend, Spandex",
+    "occasion": "Party, Evening Wear",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "image": "https://loremflickr.com/800/1000/cocktaildress",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 6,
+    "name": "Kanchipuram Silk Bridal Saree",
+    "description": "Authentic Kanchipuram silk saree with rich zari work on the pallu and borders. A timeless piece for the modern bride.",
+    "category": "bridal",
+    "price": 14200,
+    "stock": 8,
+    "sku": "BRD-SAR-002",
+    "barcode": "8901234567006",
+    "fabric": "Pure Silk",
+    "occasion": "Wedding, Festive",
     "sizes": [
       "Free Size"
     ],
-    "image": "https://res.cloudinary.com/djn3eb2ht/image/upload/v1782898758/shalom-fashion/products/product-1782898754091-225758445.jpg",
-    "created_at": "2026-07-01T09:39:19.083Z",
-    "updated_at": "2026-07-01T09:39:19.083Z"
+    "image": "https://loremflickr.com/800/1000/silksaree",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 7,
+    "name": "Gold Plated Kundan Jhumkas",
+    "description": "Traditional gold-plated jhumka earrings featuring intricate Kundan stones and pearl drops.",
+    "category": "accessories",
+    "price": 850,
+    "stock": 60,
+    "sku": "ACC-EAR-001",
+    "barcode": "8901234567007",
+    "fabric": "Alloy, Mixed Metals",
+    "occasion": "Festive, Wedding, Party",
+    "sizes": [
+      "Free Size"
+    ],
+    "image": "https://loremflickr.com/800/1000/jhumka",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 8,
+    "name": "Bridal Pearl Hair Vine",
+    "description": "A flexible and elegant hair vine adorned with freshwater pearls and crystal leaves, perfect for bridal hairstyles.",
+    "category": "accessories",
+    "price": 1200,
+    "stock": 25,
+    "sku": "ACC-HAR-002",
+    "barcode": "8901234567008",
+    "fabric": "Wire, Rhinestone, Pearl",
+    "occasion": "Wedding, Party",
+    "sizes": [
+      "Free Size"
+    ],
+    "image": "https://loremflickr.com/800/1000/bridalhair",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 9,
+    "name": "High-Waisted Wide Leg Trousers",
+    "description": "Tailored high-waisted wide-leg trousers that offer a flattering silhouette. Ideal for office wear or chic casual outings.",
+    "category": "western",
+    "price": 1699,
+    "stock": 40,
+    "sku": "WES-TRS-003",
+    "barcode": "8901234567009",
+    "fabric": "Cotton Blend",
+    "occasion": "Casual, Formal",
+    "sizes": [
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "image": "https://loremflickr.com/800/1000/trousers",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
+  },
+  {
+    "id": 10,
+    "name": "Embellished Evening Clutch",
+    "description": "A glamorous evening clutch covered in sparkling rhinestones with a detachable chain strap.",
+    "category": "accessories",
+    "price": 1450,
+    "stock": 20,
+    "sku": "ACC-BAG-003",
+    "barcode": "8901234567010",
+    "fabric": "Velvet, Metal",
+    "occasion": "Party, Wedding",
+    "sizes": [
+      "Standard"
+    ],
+    "image": "https://loremflickr.com/800/1000/clutchbag",
+    "created_at": "2026-07-01T18:19:03.000Z",
+    "updated_at": "2026-07-01T18:19:03.000Z"
   }
 ]
